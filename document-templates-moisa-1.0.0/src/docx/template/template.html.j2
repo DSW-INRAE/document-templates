@@ -1,0 +1,157 @@
+{%- set km = ctx.knowledgeModel -%}
+{%- set repliesMap = ctx.questionnaireReplies -%}
+
+<div>
+
+    {% set JDDs = [] %}
+    {% set questionJDDUuid = "8cb7d727-c321-418e-b02c-7bb06cc173d0.e78ec959-6fe7-40ad-a68f-0b64f8a3ffb2" %}
+    {% for JDDUuid in repliesMap[questionJDDUuid] | reply_items %}
+        {% set JDD = {} %}
+
+        {# {% do JDD.update({"truc": repliesMap[[questionJDDUuid, JDDUuid, "UUID"] | reply_path] | reply_str_value }) %} #}
+
+        {% do JDD.update({"JDD": "<fieldset>3.1<fieldset>"}) %}
+        {# Section 3.1 : Identification du / des jeux de données #}
+        {% do JDD.update({"num": repliesMap[[questionJDDUuid, JDDUuid, "11971b80-d8c7-4526-9ebd-ba44e95460b1"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"nom": repliesMap[[questionJDDUuid, JDDUuid, "867ba1b7-36db-4665-b243-8cf06639fdb1"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"type": km.entities.answers[repliesMap[[questionJDDUuid, JDDUuid, "d8f13c7c-e2bb-4f3c-b986-004939e27746"] | reply_path] | reply_str_value].label}) %}
+        {% do JDD.update({"population": repliesMap[[questionJDDUuid, JDDUuid, "c7dbd6dd-ea1a-448d-ad2f-e307e3d4de32"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"echelle": repliesMap[[questionJDDUuid, JDDUuid, "65568585-bc69-4f79-b028-120796d71048"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"dateDebut": repliesMap[[questionJDDUuid, JDDUuid, "24311a81-6710-4ec5-b083-5f51b74524bf"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"dateFin": repliesMap[[questionJDDUuid, JDDUuid, "10c80187-3f77-4081-844f-0a3be1e034d9"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"periodicite": "d4468e8d-d6a8-4b01-aed0-a382a10c9f5d" == repliesMap[[questionJDDUuid, JDDUuid, "2d452f02-73f4-480f-84be-382c3be4228e"] | reply_path] | reply_str_value}) %}
+        {% if JDD.periodicite %}
+            {% do JDD.update({"precisionsPeriodicite": repliesMap[[questionJDDUuid, JDDUuid, "2d452f02-73f4-480f-84be-382c3be4228e.d4468e8d-d6a8-4b01-aed0-a382a10c9f5d.2f87b7e3-8ff1-43bd-8db4-c437aef8f0e8"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"wp": "7b5306a8-e7f9-4f12-b6e4-906432f9e907" == repliesMap[[questionJDDUuid, JDDUuid, "f154308c-2712-49cd-a1ea-824576aba63a"] | reply_path] | reply_str_value}) %}
+        {% if JDD.wp %}
+            {% do JDD.update({"precisionsWp": repliesMap[[questionJDDUuid, JDDUuid, "f154308c-2712-49cd-a1ea-824576aba63a.7b5306a8-e7f9-4f12-b6e4-906432f9e907.0ebc3337-fda4-4e32-9c74-0da29393fb80"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {# Responsables JDD #}
+        {% set responsables = [] %}
+        {% set questionResponsableUuid = [questionJDDUuid, JDDUuid, "0dc9506d-e3b5-410d-af6e-aa17afcef3db"] | reply_path %}
+        {% for replyUuid in repliesMap[questionResponsableUuid] | reply_items %}
+            {%- set responsable = namespace() -%}
+            {% set responsable.nom = repliesMap[[questionResponsableUuid, replyUuid, "3a150f1c-3bc5-4990-851d-84fbb6bd3fcf"] | reply_path] | reply_str_value %}
+            {% set responsable.institution = repliesMap[[questionResponsableUuid, replyUuid, "697ce2a0-9193-414a-8126-a929b8293634"] | reply_path] | reply_str_value %}
+            {% set responsable.unite = repliesMap[[questionResponsableUuid, replyUuid, "d4c91161-737c-4bb4-adec-d19b0fc9bcc9"] | reply_path] | reply_str_value %}
+            {% do responsables.append(responsable.nom + ", " + responsable.institution + ", " + responsable.unite) %}
+        {% endfor %}
+        {% do JDD.update({"responsablesDonnees": responsables}) %}
+
+        {# Responsables Collecte #}
+        {% set responsables = [] %}
+        {% set questionResponsableUuid = [questionJDDUuid, JDDUuid, "c2543f62-d346-4233-b0a8-1d1f26beea59"] | reply_path %}
+        {% for replyUuid in repliesMap[questionResponsableUuid] | reply_items %}
+            {%- set responsable = namespace() -%}
+            {% set responsable.nom = repliesMap[[questionResponsableUuid, replyUuid, "a639c586-563a-421c-afd1-4260a67b723d"] | reply_path] | reply_str_value %}
+            {% set responsable.institution = repliesMap[[questionResponsableUuid, replyUuid, "e995fa5e-1a5c-483c-b007-49b87e7382c6"] | reply_path] | reply_str_value %}
+            {% set responsable.unite = repliesMap[[questionResponsableUuid, replyUuid, "9523b754-c66f-4f2f-9880-7475cc85ecca"] | reply_path] | reply_str_value %}
+            {% do responsables.append(responsable.nom + ", " + responsable.institution + ", " + responsable.unite) %}
+        {% endfor %}
+        {% do JDD.update({"responsablesCollecte": responsables}) %}
+
+        {# Responsables Analyse #}
+        {% set responsables = [] %}
+        {% set questionResponsableUuid = [questionJDDUuid, JDDUuid, "2dac939a-c680-42cc-ad8c-1a810f20ab23"] | reply_path %}
+        {% for replyUuid in repliesMap[questionResponsableUuid] | reply_items %}
+            {%- set responsable = namespace() -%}
+            {% set responsable.nom = repliesMap[[questionResponsableUuid, replyUuid, "6d6ed073-c325-4ec2-8284-574c661032df"] | reply_path] | reply_str_value %}
+            {% set responsable.institution = repliesMap[[questionResponsableUuid, replyUuid, "88cc04cb-a3fd-4908-b23b-b06eb436c8b3"] | reply_path] | reply_str_value %}
+            {% set responsable.unite = repliesMap[[questionResponsableUuid, replyUuid, "b0dfbb36-bb8f-4d58-9e5b-015e486b8789"] | reply_path] | reply_str_value %}
+            {% do responsables.append(responsable.nom + ", " + responsable.institution + ", " + responsable.unite) %}
+        {% endfor %}
+        {% do JDD.update({"responsablesAnalyse": responsables}) %}
+
+        {% do JDD.update({"institutionsDifferentes": "d4942927-0250-424b-b980-51915bb91d28" == repliesMap[[questionJDDUuid, JDDUuid, "e1df7094-6696-4136-8f13-fc72bd2c43a1"] | reply_path] | reply_str_value}) %}
+        {% if JDD.institutionsDifferentes %}
+            {% do JDD.update({"responsabiliteConjointe": "a11a3629-e04c-4c59-86dd-3511b56acd3c" == repliesMap[[questionJDDUuid, JDDUuid, "e1df7094-6696-4136-8f13-fc72bd2c43a1.d4942927-0250-424b-b980-51915bb91d28.d82c7cc2-cc2c-4a81-8cb5-5803684deb71"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"baseDeDonnees": "e63ba5a2-023b-4194-b1a9-e8840ca841f0" == repliesMap[[questionJDDUuid, JDDUuid, "9a142ad7-b3c3-49d1-aae1-49389cb7f297"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"dpi": repliesMap[[questionJDDUuid, JDDUuid, "77b7dfd8-0e11-486d-bc70-71a49b1c8e49"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"aspectEthique": "9c56019f-b148-4f5b-bbb3-727140c8af0d" == repliesMap[[questionJDDUuid, JDDUuid, "88917f14-77b6-4e55-bef8-b48b54472308"] | reply_path] | reply_str_value}) %}
+        {% if JDD.aspectEthique %}
+            {% do JDD.update({"precisionsAspectEthique": repliesMap[[questionJDDUuid, JDDUuid, "88917f14-77b6-4e55-bef8-b48b54472308.9c56019f-b148-4f5b-bbb3-727140c8af0d.130567cf-cb2e-470d-8fad-4743dfabbefd"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"FIN 3.1": "</fieldset>3.2<fieldset>"}) %}
+        {# Section 3.2 : Description du / des jeux de données #}
+
+        {% do JDD.update({"FIN 3.2": "</fieldset>3.3<fieldset>"}) %}
+        {# Section 3.3 : Métadonnées #}
+        {% do JDD.update({"documentMeta": "e63ba5a2-023b-4194-b1a9-e8840ca841f0" == repliesMap[[questionJDDUuid, JDDUuid, "9a142ad7-b3c3-49d1-aae1-49389cb7f297"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"standardMeta": repliesMap[[questionJDDUuid, JDDUuid, "a69dc4f8-2381-4144-8994-f8bb02e5695a"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"formatDonnees": repliesMap[[questionJDDUuid, JDDUuid, "d7cf30dd-5022-4d9d-afcd-c9cf3a329d86"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"gestionFichiers": repliesMap[[questionJDDUuid, JDDUuid, "e47867a1-27d4-4599-bd23-c9436ffe8512"] | reply_path] | reply_str_value }) %}
+
+        {% do JDD.update({"FIN 3.3": "</fieldset>3.4<fieldset>"}) %}
+        {# Section 3.4 :  #}
+
+        {% do JDD.update({"FIN 3.4": "</fieldset>3.5<fieldset>"}) %}
+        {# Section 3.5 :  #}
+        {% do JDD.update({"confidentialitePublic": "94adc91e-98b7-4737-a21d-557ab31a6814" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"confidentialiteLimite": "d6f6ef2e-62e3-467c-9911-23cace669f0d" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"confidentialiteConfidentiel": "333e76ca-1979-4dba-af67-91e09689189d" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"confidentialiteRestreint": "d88377f7-ce26-4f3d-825c-2476a0f2df60" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"ruptureNegligeable": "09cfa287-7179-4513-b202-da083602463c" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"ruptureLimite": "2032459a-2fc2-4763-80c7-69e5a4cbc80a" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"ruptureImportant": "44ee2913-ab70-4cfd-9e67-183fdcc05a4c" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"ruptureMaximal": "0994df85-383d-4368-a3ab-9140b8ac9329" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"integriteNegligeable": "6e1f9eb6-56bb-4478-9bac-9cd96f8c4817" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"integriteLimite": "ad7b007f-1975-4e1e-919b-1b356748ded5" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"integriteImportant": "08df23ad-906a-401d-a39e-19de1dba2601" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"integriteMaximal": "43b000b3-f3ba-453e-9d2b-409ff803a422" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"disponibiliteNegligeable": "80e00bdf-a27d-4513-98b6-44142193145e" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"disponibiliteLimite": "c22821ab-b589-4dac-acd0-83e383a2b2d9" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"disponibiliteImportant": "6e16d2f9-6384-4d7b-bfbf-29b876527a47" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"disponibiliteMaximal": "18435e22-8e65-4bd5-806b-7379e893f412" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"FIN 3.5": "</fieldset>3.6<fieldset>"}) %}
+        {# Section 3.6 : Conservation et Archivage #}
+
+        {% do JDD.update({"dureeConservation": repliesMap[[questionJDDUuid, JDDUuid, "4efd0042-eeb1-4e60-bddf-3fa85421c5ee"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"volumeDonnees": repliesMap[[questionJDDUuid, JDDUuid, "2ff6d79d-3f8e-49d6-a700-52ea3850ac83"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"procedureConservation": repliesMap[[questionJDDUuid, JDDUuid, "e66659cb-f3af-4f78-b390-5f403cf5fea1"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"responsableConservation": repliesMap[[questionJDDUuid, JDDUuid, "9f8c3d54-a4db-4ea9-b437-0ea8c4a17b63"] | reply_path] | reply_str_value }) %}
+        {% do JDD.update({"coutsConservation": repliesMap[[questionJDDUuid, JDDUuid, "32e17b46-626b-4014-ab9e-2a2cf4c421a6"] | reply_path] | reply_str_value }) %}
+
+        {% do JDD.update({"donneesArchives": "da57a820-1f04-49d4-835e-36896dc9585d" == repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676"] | reply_path] | reply_str_value }) %}
+        {% if JDD.donneesArchives %}
+            {% set typeArchivesUuids = repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.da57a820-1f04-49d4-835e-36896dc9585d.0ec97616-4ecb-4574-99b3-6013a1f6649e"] | reply_path] | reply_items %}
+            {% do JDD.update({"archiveConsentement": "f535480d-2513-4016-abe5-7b79226e5260" in typeArchivesUuids}) %}
+            {% do JDD.update({"archiveQuestionnaire": "28f3fd61-6730-4419-b7c0-450b56f01ba0" in typeArchivesUuids}) %}
+            {% do JDD.update({"archiveDonnesAnon": "f5d4d960-75ba-4d18-962a-0812dc576594" in typeArchivesUuids}) %}
+            {% do JDD.update({"archiveAutre": "6a230a6d-6990-4031-ba90-51b354d30433" == repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.da57a820-1f04-49d4-835e-36896dc9585d.93494116-4bed-4c8c-867f-e17469066095"] | reply_path] | reply_str_value }) %}
+            {% if JDD.archiveAutre %}
+                {% do JDD.update({"precisionArchiveAutre": repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.da57a820-1f04-49d4-835e-36896dc9585d.93494116-4bed-4c8c-867f-e17469066095.6a230a6d-6990-4031-ba90-51b354d30433.a4645b50-26c1-4e44-8ca2-0d5cc849ab92"] | reply_path] | reply_str_value }) %}
+            {% endif %}
+        {% else %}
+            {% do JDD.update({"destructionDonnees": "45167149-0291-49ed-8278-bed873676c13" == repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.6016d2e4-d883-427b-bba8-aa797e4313c9.93da82ff-5636-4137-9b20-3b1e6b3e4bbe"] | reply_path] | reply_str_value }) %}
+        {% endif %}
+
+        {% do JDD.update({"FIN 3.6": "</fieldset></fieldset>"}) %}
+
+        {% do JDDs.append(JDD) %}
+
+        {% for key, value in JDD.items() %}
+            <p>{{ key }} : <span style="color: red">{{ value }}</span></p>
+        {% endfor %}
+    {% endfor %}
+
+</div>
+<p>
+    ___________________________________________________________________________
+</p>
+<div>
+
+    {{ repliesMap }}
+
+</div>

@@ -1,0 +1,93 @@
+{%- set repliesMap = ctx.questionnaireReplies -%}
+{# On acquiert les données utiles #}
+{%- set acronyme = repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.be7e8911-672b-4375-9d67-7709e31f6ae5"]|reply_str_value -%}
+{%- set referenceConvention = repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.f5bdfbd7-045d-4ce6-a192-c1a3ca397254"]|reply_str_value -%}
+{%- set date = repliesMap["17e890a2-b625-4904-9691-e8e77dff5424.d492c1ce-cd4c-4ee5-bb87-49ef29961974"]|reply_str_value -%}
+{%- set auteur = repliesMap["17e890a2-b625-4904-9691-e8e77dff5424.b2c64d38-3bca-49ee-9436-b03b5133ad11"]|reply_str_value -%}
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:hdr xmlns:o="urn:schemas-microsoft-com:office:office"
+       xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+       xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+       xmlns:w10="urn:schemas-microsoft-com:office:word"
+       xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+       xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+       xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
+       xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+       xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" mc:Ignorable="w14 wp14 w15">
+    <w:p>
+        <w:pPr>
+            <w:pStyle w:val="Entte"/>
+            <w:rPr></w:rPr>
+        </w:pPr>
+        <w:r>
+            <w:drawing>
+                <wp:anchor behindDoc="1" distT="0" distB="0" distL="0" distR="0" simplePos="0" locked="0"
+                           layoutInCell="0" allowOverlap="1" relativeHeight="11">
+                    <wp:simplePos x="0" y="0"/>
+                    <wp:positionH relativeFrom="column">
+                        <wp:posOffset>4948555</wp:posOffset>
+                    </wp:positionH>
+                    <wp:positionV relativeFrom="paragraph">
+                        <wp:posOffset>635</wp:posOffset>
+                    </wp:positionV>
+                    <wp:extent cx="1143000" cy="304800"/>
+                    <wp:effectExtent l="0" t="0" r="0" b="0"/>
+                    <wp:wrapSquare wrapText="largest"/>
+                    <wp:docPr id="8" name="Image8" descr=""></wp:docPr>
+                    <wp:cNvGraphicFramePr>
+                        <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                                             noChangeAspect="1"/>
+                    </wp:cNvGraphicFramePr>
+                    <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                            <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                                <pic:nvPicPr>
+                                    <pic:cNvPr id="8" name="Image8" descr=""></pic:cNvPr>
+                                    <pic:cNvPicPr>
+                                        <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
+                                    </pic:cNvPicPr>
+                                </pic:nvPicPr>
+                                <pic:blipFill>
+                                    <a:blip r:embed="rId1"></a:blip>
+                                    <a:stretch>
+                                        <a:fillRect/>
+                                    </a:stretch>
+                                </pic:blipFill>
+                                <pic:spPr bwMode="auto">
+                                    <a:xfrm>
+                                        <a:off x="0" y="0"/>
+                                        <a:ext cx="1143000" cy="304800"/>
+                                    </a:xfrm>
+                                    <a:prstGeom prst="rect">
+                                        <a:avLst/>
+                                    </a:prstGeom>
+                                </pic:spPr>
+                            </pic:pic>
+                        </a:graphicData>
+                    </a:graphic>
+                </wp:anchor>
+            </w:drawing>
+        </w:r>
+        <w:r>
+            <w:rPr></w:rPr>
+            <w:t xml:space="preserve">{{ acronyme }} </w:t>
+            <w:tab/>
+            <w:t>{{ referenceConvention }}</w:t>
+        </w:r>
+    </w:p>
+    <w:p>
+        <w:pPr>
+            <w:pStyle w:val="Entte"/>
+            <w:rPr></w:rPr>
+        </w:pPr>
+        <w:r>
+            <w:rPr></w:rPr>
+            <w:t xml:space="preserve">Version du PGD : {{ date }} </w:t>
+            <w:tab/>
+            <w:t>Auteur : {{ auteur }}</w:t>
+        </w:r>
+    </w:p>
+</w:hdr>

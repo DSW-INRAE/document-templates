@@ -1,0 +1,479 @@
+{%- set repliesMap = ctx.questionnaireReplies -%}
+{% set km = ctx.knowledgeModel %}
+
+{# {%- set truc.truc = repliesMap[""] | reply_str_value -%} #}
+
+{# On acquiert les données utiles #}
+{# Chapitre 1 : Infos sur le PGD #}
+{%- set pgd = {} -%}
+{% do pgd.update({"libelle": repliesMap["17e890a2-b625-4904-9691-e8e77dff5424.18f408de-9d0d-45d0-beb1-6139287c95b4"]|reply_str_value}) %}
+{% do pgd.update({"auteur": repliesMap["17e890a2-b625-4904-9691-e8e77dff5424.b2c64d38-3bca-49ee-9436-b03b5133ad11"]|reply_str_value}) %}
+{% do pgd.update({"date": repliesMap["17e890a2-b625-4904-9691-e8e77dff5424.d492c1ce-cd4c-4ee5-bb87-49ef29961974"]|reply_str_value}) %}
+{% do pgd.update({"commentaire": ctx.questionnaireDescription}) %}
+
+{# Chapitre 2 : Infos sur le pojet #}
+{%- set projet = {} -%}
+{% do projet.update({"acronyme": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.be7e8911-672b-4375-9d67-7709e31f6ae5"]|reply_str_value}) %}
+{% do projet.update({"titreComplet": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.8ef7d91c-300b-4860-b84d-618935b460ed"]|reply_str_value}) %}
+{% do projet.update({"financeurs": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.3842043c-4700-46ac-b9ab-ca888661a60b"] | reply_str_value}) %}
+{% do projet.update({"objectifs": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.549fa57c-e44b-44b1-b76c-2ec467e57550"] | reply_str_value}) %}
+
+{% set questionPartenairesUuid = "7f3eb486-702d-4c92-8dc5-7014174a3fe0.96d7963c-7743-4948-8310-1ce7a525ab28" %}
+{% do projet.update({"partenaires": []}) %}
+{# Un tableau de String sous la forme : ['nom, unite, pays', 'nom, unite, pays', ...] #}
+{% for replyUuid in repliesMap[questionPartenairesUuid] | reply_items %}
+    {%- set partenaire = namespace() -%}
+    {% set partenaire.nom = repliesMap[[questionPartenairesUuid, replyUuid, "055f6871-257c-404e-aca4-f56dcd6bee5a"] | reply_path] | reply_str_value %}
+    {% set partenaire.unite = repliesMap[[questionPartenairesUuid, replyUuid, "edb0ba26-4078-4f57-905d-408863fcca29"] | reply_path] | reply_str_value %}
+    {% set partenaire.pays = repliesMap[[questionPartenairesUuid, replyUuid, "9b72a8fb-465a-48f1-a627-1dbcb68a97f7"] | reply_path] | reply_str_value %}
+    {% do projet.partenaires.append(partenaire.nom + ", " + partenaire.unite + ", " + partenaire.pays) %}
+{% endfor %}
+
+{% do projet.update({"IDAppel": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.ea2bbbac-ada7-48cb-b06f-0bd966d97f60"] | reply_str_value}) %}
+{% do projet.update({"thematiqueAppel": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.379adb0e-edb3-44fe-91a1-748896746af8"] | reply_str_value}) %}
+{% do projet.update({"referenceConvention": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.f5bdfbd7-045d-4ce6-a192-c1a3ca397254"] | reply_str_value}) %}
+{% do projet.update({"dateDebut": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.1c777ed2-9d24-49eb-8e1e-dff882b7ab18"] | reply_str_value}) %}
+{% do projet.update({"dateFin": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.d668bb53-5bb1-47d5-a77c-eda0a9f12003"] | reply_str_value}) %}
+{% do projet.update({"institutionCoordinatrice": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.5542df11-bf0d-437d-bad2-33a22620d62f"] | reply_str_value}) %}
+{% do projet.update({"responsableScientifique": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.4ce0b862-6dc0-45e2-9c65-7dfbec19a323"] | reply_str_value}) %}
+
+{% set questionMotsClefsUuid = "7f3eb486-702d-4c92-8dc5-7014174a3fe0.8ab788d3-0541-42b1-850d-ba2dbc438e4d" %}
+{% do projet.update({"motsClefs": []}) %} {# Un tableau de String #}
+{% for replyUuid in repliesMap[questionMotsClefsUuid] | reply_items %}
+    {% do projet.motsClefs.append(repliesMap[[questionMotsClefsUuid, replyUuid, "19ec82dc-eb98-4fe1-9217-823c0d40a2c2"] | reply_path] | reply_str_value) %}
+{% endfor %}
+
+{% set publicCible = repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.ef0e3982-69b9-4ffc-a618-b5c6a9bb5971"] | reply_items %}
+{% do projet.update({"cibleENS": "3f3487f7-6f11-44ac-985a-a7bea71c0465" in publicCible}) %}
+{% do projet.update({"cibleREC": "f1bebb02-6b43-42ba-b5ba-7e96b495b569" in publicCible}) %}
+{% do projet.update({"ciblePAR": "94db1547-1d33-4b5e-940d-b6bd30352830" in publicCible}) %}
+{% do projet.update({"cibleEXPT": "5d954022-51e1-4f2a-bc20-c3c65e1b91af" in publicCible}) %}
+{% do projet.update({"cibleACTP": "c3db9ff9-8bfe-49e0-95ce-b72423914289" in publicCible}) %}
+{% do projet.update({"ciblePUB": "f62af4ce-2076-4e5b-a656-07a735de82f6" in publicCible}) %}
+{% do projet.update({"cibleOPP": "dfa69670-1c7f-4c3e-bb5a-2dca1f7e1297" in publicCible}) %}
+{% do projet.update({"cibleAUTR": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.f77ac722-46d8-4bdf-a499-31a7b1dc6e20"] | reply_str_value == "e2d66dba-b62f-4b82-9f7f-1a6cdad47f95"}) %}
+{% if projet.cibleAUTR %}
+    {% do projet.update({"precisionsCibleAUTR": repliesMap["7f3eb486-702d-4c92-8dc5-7014174a3fe0.f77ac722-46d8-4bdf-a499-31a7b1dc6e20.e2d66dba-b62f-4b82-9f7f-1a6cdad47f95.31d8ee4b-a746-4b7c-9a4e-8c91aa065dcf"] | reply_str_value }) %}
+{% endif %}
+
+{# Chapitre 3 : Jeux de données #}
+
+{% set JDDs = [] %}
+{% set questionJDDUuid = "8cb7d727-c321-418e-b02c-7bb06cc173d0.e78ec959-6fe7-40ad-a68f-0b64f8a3ffb2" %}
+{% for JDDUuid in repliesMap[questionJDDUuid] | reply_items %}
+    {% set JDD = {} %}
+
+    {% do JDD.update({"uuid": JDDUuid}) %}
+
+    {# Section 3.1 : Identification du / des jeux de données #}
+    {% do JDD.update({"num": repliesMap[[questionJDDUuid, JDDUuid, "11971b80-d8c7-4526-9ebd-ba44e95460b1"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"nom": repliesMap[[questionJDDUuid, JDDUuid, "867ba1b7-36db-4665-b243-8cf06639fdb1"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"type": km.entities.answers[repliesMap[[questionJDDUuid, JDDUuid, "d8f13c7c-e2bb-4f3c-b986-004939e27746"] | reply_path] | reply_str_value].label}) %}
+    {% do JDD.update({"population": repliesMap[[questionJDDUuid, JDDUuid, "c7dbd6dd-ea1a-448d-ad2f-e307e3d4de32"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"echelle": repliesMap[[questionJDDUuid, JDDUuid, "65568585-bc69-4f79-b028-120796d71048"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"dateDebut": repliesMap[[questionJDDUuid, JDDUuid, "24311a81-6710-4ec5-b083-5f51b74524bf"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"dateFin": repliesMap[[questionJDDUuid, JDDUuid, "10c80187-3f77-4081-844f-0a3be1e034d9"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"periodicite": "d4468e8d-d6a8-4b01-aed0-a382a10c9f5d" == repliesMap[[questionJDDUuid, JDDUuid, "2d452f02-73f4-480f-84be-382c3be4228e"] | reply_path] | reply_str_value}) %}
+    {% if JDD.periodicite %}
+        {% do JDD.update({"precisionsPeriodicite": repliesMap[[questionJDDUuid, JDDUuid, "2d452f02-73f4-480f-84be-382c3be4228e.d4468e8d-d6a8-4b01-aed0-a382a10c9f5d.2f87b7e3-8ff1-43bd-8db4-c437aef8f0e8"] | reply_path] | reply_str_value}) %}
+    {% endif %}
+
+    {% do JDD.update({"wp": "7b5306a8-e7f9-4f12-b6e4-906432f9e907" == repliesMap[[questionJDDUuid, JDDUuid, "f154308c-2712-49cd-a1ea-824576aba63a"] | reply_path] | reply_str_value}) %}
+    {% if JDD.wp %}
+        {% do JDD.update({"precisionsWp": repliesMap[[questionJDDUuid, JDDUuid, "f154308c-2712-49cd-a1ea-824576aba63a.7b5306a8-e7f9-4f12-b6e4-906432f9e907.0ebc3337-fda4-4e32-9c74-0da29393fb80"] | reply_path] | reply_str_value}) %}
+    {% endif %}
+
+    {# Responsables JDD #}
+    {% set responsables = [] %}
+    {% set questionResponsableUuid = [questionJDDUuid, JDDUuid, "0dc9506d-e3b5-410d-af6e-aa17afcef3db"] | reply_path %}
+    {% for replyUuid in repliesMap[questionResponsableUuid] | reply_items %}
+        {%- set responsable = namespace() -%}
+        {% set responsable.nom = repliesMap[[questionResponsableUuid, replyUuid, "3a150f1c-3bc5-4990-851d-84fbb6bd3fcf"] | reply_path] | reply_str_value %}
+        {% set responsable.institution = repliesMap[[questionResponsableUuid, replyUuid, "697ce2a0-9193-414a-8126-a929b8293634"] | reply_path] | reply_str_value %}
+        {% set responsable.unite = repliesMap[[questionResponsableUuid, replyUuid, "d4c91161-737c-4bb4-adec-d19b0fc9bcc9"] | reply_path] | reply_str_value %}
+        {% do responsables.append(responsable.nom + ", " + responsable.institution + ", " + responsable.unite) %}
+    {% endfor %}
+    {% do JDD.update({"responsablesDonnees": responsables}) %}
+
+    {# Responsables Collecte #}
+    {% set responsables = [] %}
+    {% set questionResponsableUuid = [questionJDDUuid, JDDUuid, "c2543f62-d346-4233-b0a8-1d1f26beea59"] | reply_path %}
+    {% for replyUuid in repliesMap[questionResponsableUuid] | reply_items %}
+        {%- set responsable = namespace() -%}
+        {% set responsable.nom = repliesMap[[questionResponsableUuid, replyUuid, "a639c586-563a-421c-afd1-4260a67b723d"] | reply_path] | reply_str_value %}
+        {% set responsable.institution = repliesMap[[questionResponsableUuid, replyUuid, "e995fa5e-1a5c-483c-b007-49b87e7382c6"] | reply_path] | reply_str_value %}
+        {% set responsable.unite = repliesMap[[questionResponsableUuid, replyUuid, "9523b754-c66f-4f2f-9880-7475cc85ecca"] | reply_path] | reply_str_value %}
+        {% do responsables.append(responsable.nom + ", " + responsable.institution + ", " + responsable.unite) %}
+    {% endfor %}
+    {% do JDD.update({"responsablesCollecte": responsables}) %}
+
+    {# Responsables Analyse #}
+    {% set responsables = [] %}
+    {% set questionResponsableUuid = [questionJDDUuid, JDDUuid, "2dac939a-c680-42cc-ad8c-1a810f20ab23"] | reply_path %}
+    {% for replyUuid in repliesMap[questionResponsableUuid] | reply_items %}
+        {%- set responsable = namespace() -%}
+        {% set responsable.nom = repliesMap[[questionResponsableUuid, replyUuid, "6d6ed073-c325-4ec2-8284-574c661032df"] | reply_path] | reply_str_value %}
+        {% set responsable.institution = repliesMap[[questionResponsableUuid, replyUuid, "88cc04cb-a3fd-4908-b23b-b06eb436c8b3"] | reply_path] | reply_str_value %}
+        {% set responsable.unite = repliesMap[[questionResponsableUuid, replyUuid, "b0dfbb36-bb8f-4d58-9e5b-015e486b8789"] | reply_path] | reply_str_value %}
+        {% do responsables.append(responsable.nom + ", " + responsable.institution + ", " + responsable.unite) %}
+    {% endfor %}
+    {% do JDD.update({"responsablesAnalyse": responsables}) %}
+
+    {% do JDD.update({"institutionsDifferentes": "d4942927-0250-424b-b980-51915bb91d28" == repliesMap[[questionJDDUuid, JDDUuid, "e1df7094-6696-4136-8f13-fc72bd2c43a1"] | reply_path] | reply_str_value}) %}
+    {% if JDD.institutionsDifferentes %}
+        {% do JDD.update({"responsabiliteConjointe": "a11a3629-e04c-4c59-86dd-3511b56acd3c" == repliesMap[[questionJDDUuid, JDDUuid, "e1df7094-6696-4136-8f13-fc72bd2c43a1.d4942927-0250-424b-b980-51915bb91d28.d82c7cc2-cc2c-4a81-8cb5-5803684deb71"] | reply_path] | reply_str_value}) %}
+    {% endif %}
+
+    {% do JDD.update({"baseDeDonnees": "e63ba5a2-023b-4194-b1a9-e8840ca841f0" == repliesMap[[questionJDDUuid, JDDUuid, "9a142ad7-b3c3-49d1-aae1-49389cb7f297"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"dpi": repliesMap[[questionJDDUuid, JDDUuid, "77b7dfd8-0e11-486d-bc70-71a49b1c8e49"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"aspectEthique": "9c56019f-b148-4f5b-bbb3-727140c8af0d" == repliesMap[[questionJDDUuid, JDDUuid, "88917f14-77b6-4e55-bef8-b48b54472308"] | reply_path] | reply_str_value}) %}
+    {% if JDD.aspectEthique %}
+        {% do JDD.update({"precisionsAspectEthique": repliesMap[[questionJDDUuid, JDDUuid, "88917f14-77b6-4e55-bef8-b48b54472308.9c56019f-b148-4f5b-bbb3-727140c8af0d.130567cf-cb2e-470d-8fad-4743dfabbefd"] | reply_path] | reply_str_value}) %}
+    {% endif %}
+
+    {# Section 3.2 : Description du / des jeux de données #}
+
+    {% do JDD.update({"key": repliesMap[[questionJDDUuid, JDDUuid, "UUID"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"natureEXP": "a7c88cf0-400d-4ce2-9cab-f2e8a6a25960" in repliesMap[[questionJDDUuid, JDDUuid, "851aec2d-4973-4cd7-820d-056c2af469eb"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"natureOBS": "0ad6e511-28f3-41ef-9016-41f32a6b9491" in repliesMap[[questionJDDUuid, JDDUuid, "851aec2d-4973-4cd7-820d-056c2af469eb"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"natureENQ": "f5817548-82ee-4e7f-be85-6076ed853020" in repliesMap[[questionJDDUuid, JDDUuid, "851aec2d-4973-4cd7-820d-056c2af469eb"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"natureTMPS": "b905a160-1252-4605-83e5-a2a90b0ef286" in repliesMap[[questionJDDUuid, JDDUuid, "851aec2d-4973-4cd7-820d-056c2af469eb"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"precisionNatureAutre": repliesMap[[questionJDDUuid, JDDUuid, "d6a66489-ec47-4300-ad53-359b857428a7.28d511a3-8ef6-4636-8973-5a6754f58e02.ea35d9ce-1ebb-4fa5-9709-25d37006cbe6"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"methodeProduction": repliesMap[[questionJDDUuid, JDDUuid, "9157825d-e610-47bd-9b04-a919ddb403f9"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"outilsTraitement": repliesMap[[questionJDDUuid, JDDUuid, "f9179c66-1dad-40bc-a370-afc33c598a31"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"volumetriePrevisionnelle": repliesMap[[questionJDDUuid, JDDUuid, "229be2dd-393a-4d11-a4e0-e23baf54bd62"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"paysDonneesPerso": repliesMap[[questionJDDUuid, JDDUuid, "428ff65f-9a42-4411-a1bb-7e70def84b48"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"baseConsentement": "c5104a62-b6ee-4bee-90cb-267cb669ae4f" in repliesMap[[questionJDDUuid, JDDUuid, "de43def6-402e-4d66-8e31-1550ff4d538b"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"baseObligation": "c20799d8-8e13-4c4b-abf2-9e5c6cb84610" in repliesMap[[questionJDDUuid, JDDUuid, "de43def6-402e-4d66-8e31-1550ff4d538b"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"baseExecution": "38ed9afb-71c5-4ba6-8b05-845ef34ee4df" in repliesMap[[questionJDDUuid, JDDUuid, "de43def6-402e-4d66-8e31-1550ff4d538b"] | reply_path] | reply_items}) %}
+    {% do JDD.update({"precisionBaseAutre": repliesMap[[questionJDDUuid, JDDUuid, "683cffa4-6066-4b8b-9144-01d4e7acee83.1b57d4e3-d58b-4431-9de2-a1acd4e8277b.36a9b2e4-ca98-44f1-b34d-80c14fcdcf1a"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"infosMentionsFormulaire": "650b1674-62e4-4859-9dcc-3368f5450dd6" == repliesMap[[questionJDDUuid, JDDUuid, "07c8998a-f361-483f-9643-eb3b16fa9cbd"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"infosMentionsQuestionnaires": "3237f6a7-1045-4b81-bdd4-5e59feab49cb" == repliesMap[[questionJDDUuid, JDDUuid, "ae0c254a-68e3-4141-aa49-4c21c47922eb"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"infosFII": "b1fbb286-54b2-4a5a-93dc-5cee38368465" == repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739"] | reply_path] | reply_str_value}) %}
+    {% if JDD.infosFII %}
+        {% do JDD.update({"fiiCourrier": "920390b6-d7a9-4d90-9d02-a7e4cb0d0e8e" in repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739.b1fbb286-54b2-4a5a-93dc-5cee38368465.57587dc5-8a24-46e0-831b-11610fcacf46"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"fiiMail": "c368ac76-03ba-429f-a0a9-8465a768b941" in repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739.b1fbb286-54b2-4a5a-93dc-5cee38368465.57587dc5-8a24-46e0-831b-11610fcacf46"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"fiiSite": "5a8a3839-ad41-4054-865d-4e814bdcdaf1" in repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739.b1fbb286-54b2-4a5a-93dc-5cee38368465.57587dc5-8a24-46e0-831b-11610fcacf46"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"fiiAffichage": "28e30b70-4683-437c-b2b6-0870c7446cc4" in repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739.b1fbb286-54b2-4a5a-93dc-5cee38368465.57587dc5-8a24-46e0-831b-11610fcacf46"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"fiiMainPropre": "b89e73fc-624c-4537-b95d-e421c72df593" in repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739.b1fbb286-54b2-4a5a-93dc-5cee38368465.57587dc5-8a24-46e0-831b-11610fcacf46"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"precisionFIIAutre": repliesMap[[questionJDDUuid, JDDUuid, "09f70437-37d9-4fc5-90c7-b3b2a1626739.b1fbb286-54b2-4a5a-93dc-5cee38368465.e38bf6dc-c750-4262-afb3-42ad0874d8cd.69072053-4edb-4933-aa46-993623c7d4d6.20c9ee3c-36b6-48d4-a9bf-f782ed802e5f"] | reply_path] | reply_str_value}) %}
+    {% endif %}
+    {% do JDD.update({"raisonAucuneInfo": repliesMap[[questionJDDUuid, JDDUuid, "d410b5cb-be84-4acd-8b7b-e430485d3975.e322c082-eb5a-4383-93be-70fd11239b95.351d3df2-ad53-4bfe-9b47-c74c15354313"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"droitPersonneAcces": "05080480-2df6-4622-8a40-f46a710f18f3" == repliesMap[[questionJDDUuid, JDDUuid, "dfaafb26-1d97-400f-8c5a-defce1ce6701"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"droitPersonneCourrier": "0a40d7cb-8983-4adc-b727-51635036e7d5" == repliesMap[[questionJDDUuid, JDDUuid, "dfaafb26-1d97-400f-8c5a-defce1ce6701"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"droitPersonneMail": "51948853-5307-4af4-a90b-407f965d463d" == repliesMap[[questionJDDUuid, JDDUuid, "dfaafb26-1d97-400f-8c5a-defce1ce6701"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"precisionAutreDroitPersonne": repliesMap[[questionJDDUuid, JDDUuid, "dfaafb26-1d97-400f-8c5a-defce1ce6701.90043b10-05c2-4a83-9a22-18d1c31041ef.a859c8e3-ff98-4af8-aa00-06563bc4e44c"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"responsableDroitPersonne": repliesMap[[questionJDDUuid, JDDUuid, "b2b95ef8-4bed-42c8-b60b-cbb56d5308ec"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"nbPersonneConcernees": []}) %}
+    {% do JDD.nbPersonneConcernees.append("61eb69c6-75bc-4d3f-96cd-3d617b88e1af" == repliesMap[[questionJDDUuid, JDDUuid, "0c31c6e8-c396-4bb9-ae0f-9242d2931f95"] | reply_path] | reply_str_value) %}
+    {% do JDD.nbPersonneConcernees.append("a9ee0298-c01f-4917-a16a-80ba77448d60" == repliesMap[[questionJDDUuid, JDDUuid, "0c31c6e8-c396-4bb9-ae0f-9242d2931f95"] | reply_path] | reply_str_value) %}
+    {% do JDD.nbPersonneConcernees.append("2cdf35db-c6c8-4947-bf13-8818ea68366e" == repliesMap[[questionJDDUuid, JDDUuid, "0c31c6e8-c396-4bb9-ae0f-9242d2931f95"] | reply_path] | reply_str_value) %}
+    {% do JDD.nbPersonneConcernees.append("fcb9910b-aa6c-40c5-bf30-854435a86294" == repliesMap[[questionJDDUuid, JDDUuid, "0c31c6e8-c396-4bb9-ae0f-9242d2931f95"] | reply_path] | reply_str_value) %}
+
+    {% do JDD.update({"personnesMineures": "d259f85e-e383-44a0-a94a-de81c5a85d92" == repliesMap[[questionJDDUuid, JDDUuid, "9d6e4869-a55c-40e0-bf94-58e7d7c71965"] | reply_path] | reply_str_value}) %}
+    {% if JDD.personnesMineures %}
+        {% do JDD.update({"consentementParental": "408f06ef-da84-4577-97e4-f8f3d8957600" == repliesMap[[questionJDDUuid, JDDUuid, "9d6e4869-a55c-40e0-bf94-58e7d7c71965.d259f85e-e383-44a0-a94a-de81c5a85d92.836aef3a-698f-49c6-89e6-a7cd9f0dd1aa"] | reply_path] | reply_str_value}) %}
+    {% endif %}
+
+    {% do JDD.update({"personnesProtegees": "57d60731-b177-4c88-a897-363af0faaac9" == repliesMap[[questionJDDUuid, JDDUuid, "2dce324a-052a-4c8b-9754-749c0682b8a3"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"precisionPersonnesUMR": repliesMap[[questionJDDUuid, JDDUuid, "21d0658b-0187-40ac-b6eb-4440b0265dc5.1b326b75-1f4b-44f9-9d34-92113c13fdc1.de424511-7ad8-41e1-98d2-229dd0dad666"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"precisionPersonnesEtudiantes": repliesMap[[questionJDDUuid, JDDUuid, "831b2ae4-96c7-4f44-881a-04bd12e33ce0.03be9461-ba12-4c5a-b761-65f71fcff35f.a588100e-df47-4d19-ae25-145e6d5863a0"] | reply_path] | reply_str_value}) %}
+
+    {% set questionSousTraitant = [questionJDDUuid, JDDUuid, "de1a3cb3-c6ec-4faf-93aa-8cf29754e648.8c45a042-996f-47f0-9097-5995ecd89cd7.541f3672-f86a-4630-bd5c-42aea37dd1a7"] | reply_path %}
+    {% do JDD.update({"sousTraitants": []}) %}
+    {% for sousTraitantUUID in repliesMap[questionSousTraitant] | reply_items %}
+        {% set sousTraitant = {} %}
+
+        {% do sousTraitant.update({"nom": repliesMap[[questionSousTraitant, sousTraitantUUID, "51019742-1e7d-4f70-9c65-dadaf6405844"] | reply_path] | reply_str_value}) %}
+        {% do sousTraitant.update({"coordonnees": repliesMap[[questionSousTraitant, sousTraitantUUID, "9dee26e2-6123-4e95-a302-a53660e14218"] | reply_path] | reply_str_value}) %}
+        {% do sousTraitant.update({"nature": repliesMap[[questionSousTraitant, sousTraitantUUID, "5674a010-1f04-46cb-9d15-0b4ba0b8d2c9"] | reply_path] | reply_str_value}) %}
+        {% do sousTraitant.update({"contrat": "45fff8d4-6af2-4028-bb05-b4e7b3a6b793" == repliesMap[[questionSousTraitant, sousTraitantUUID, "dd8ea4b1-a7f8-4245-b5b9-ad88303f9159"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.sousTraitants.append(sousTraitant) %}
+    {% endfor %}
+
+    {% do JDD.update({"criteresEtudeImpact": []}) %}
+    {% do JDD.criteresEtudeImpact.append("fdb12dbf-9756-4665-b664-de80805db745" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("391c1d3e-fc40-40cc-b88b-5ae7eb819234" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("f1915452-a895-4862-834b-82754ed07e87" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("7a138468-9d92-4c92-9c29-c3202ce249a4" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("2502021e-bdd0-4b04-a3ed-6ae1d1327369" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("927973bc-3abb-4df9-98b0-1a6f2ee18749" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("edb3b878-d045-46e3-8daa-f8d831a247a4" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("e58d2376-ecd0-4635-8108-fe40cb0384d8" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("fd64980b-c0e6-4476-88ae-398f553a78de" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("387c7962-0da8-4f23-8bf5-f0d5d14c343e" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("87a23036-9886-445d-a5bb-e1859e3514e0" in repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed.6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24.a4e59e20-3a1c-4f9e-8e3c-e6e97bf0fcaf"] | reply_path] | reply_items) %}
+    {% do JDD.criteresEtudeImpact.append("6b1a74e1-bb06-4e6b-b136-fa6b88bc1a24" == repliesMap[[questionJDDUuid, JDDUuid, "977b1737-54b8-4ddc-9cb9-5786398457ed"] | reply_path] | reply_str_value) %}
+
+    {% do JDD.update({"methodologieRecherche": []}) %}
+    {% do JDD.methodologieRecherche.append("40f396f6-6c05-4ea4-a573-ee2fddcd594d" in repliesMap[[questionJDDUuid, JDDUuid, "e3919068-5046-4aa2-8599-d22f0412a46e.2cb426f0-b5fd-4500-952f-4990c7bfe4ad.4d5e614d-a522-48e9-8fd2-40b721cde2a8"] | reply_path] | reply_items) %}
+    {% do JDD.methodologieRecherche.append("3c4473ee-8386-46e7-ad7f-00eb47da898d" in repliesMap[[questionJDDUuid, JDDUuid, "e3919068-5046-4aa2-8599-d22f0412a46e.2cb426f0-b5fd-4500-952f-4990c7bfe4ad.4d5e614d-a522-48e9-8fd2-40b721cde2a8"] | reply_path] | reply_items) %}
+    {% do JDD.methodologieRecherche.append("645d194c-0320-4428-9430-bf1321890ff4" in repliesMap[[questionJDDUuid, JDDUuid, "e3919068-5046-4aa2-8599-d22f0412a46e.2cb426f0-b5fd-4500-952f-4990c7bfe4ad.4d5e614d-a522-48e9-8fd2-40b721cde2a8"] | reply_path] | reply_items) %}
+    {% do JDD.methodologieRecherche.append("2abffa55-49b7-4e2b-b5f7-3026fd32e317" in repliesMap[[questionJDDUuid, JDDUuid, "e3919068-5046-4aa2-8599-d22f0412a46e.2cb426f0-b5fd-4500-952f-4990c7bfe4ad.4d5e614d-a522-48e9-8fd2-40b721cde2a8"] | reply_path] | reply_items) %}
+    {% do JDD.methodologieRecherche.append("77bd57bc-9977-4281-b4b2-2e93e9519245" in repliesMap[[questionJDDUuid, JDDUuid, "e3919068-5046-4aa2-8599-d22f0412a46e.2cb426f0-b5fd-4500-952f-4990c7bfe4ad.4d5e614d-a522-48e9-8fd2-40b721cde2a8"] | reply_path] | reply_items) %}
+    {% do JDD.methodologieRecherche.append("3b35a960-808e-4eac-b55e-b2458d6272c2" in repliesMap[[questionJDDUuid, JDDUuid, "e3919068-5046-4aa2-8599-d22f0412a46e.2cb426f0-b5fd-4500-952f-4990c7bfe4ad.4d5e614d-a522-48e9-8fd2-40b721cde2a8"] | reply_path] | reply_items) %}
+
+    {# Annexe 1 / Section sur la nature des données #}
+
+    {% set precisionsNatures = [] %}
+    {% do precisionsNatures.append({"niveauImpact":"1", "texte":"Données d’identification de base (civilité, nom, prénom, nationalité)", "uuid":"71ea9f4b-cab2-4fdf-a604-f3ec8f20ecd1.ba9713f5-3ac1-4b52-a001-103cd5e60bb5", "natureUuid":"a36045a2-6fef-4bed-8a8b-d962a9c130ca", "origineUuid":"c575142e-6712-456f-896a-b47d90169f0f.3741c4e4-c508-4f5c-bff4-f0ea0efcf112.b5fa8ed1-79eb-4346-8bc0-3a2e9401c710"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Données d’identification détaillée (lieu de naissance, date de naissance)", "uuid":"6bdc2bc9-c8b6-4924-ac07-4d5585bfdb95.9f988032-d1af-4180-bfab-df3d9f64dfce", "natureUuid":"ed4dbce5-69d8-401c-bfcb-adff7dc6f678", "origineUuid":"a4ce2750-ece4-490b-ad04-390c8ff21f18.15dc6871-a358-4524-834a-4daa2acba5c8.f6ce6a17-7cbf-42cb-9239-c3a34061b362"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Situation d’invalidité ou handicap", "uuid":"148d7a7e-2bd6-466b-9cc8-ceb017374a54.b7b1e6f2-a859-44d9-ae4e-7378b36d30f0", "natureUuid":"8eab7cc5-1597-4d71-82ea-66cb89c2ce46", "origineUuid":"161c2d1f-6caf-4134-acb6-fe0f649489d2.d06a04b2-a021-41c9-91e1-3ed05ddeb101.44e9204c-595e-46fe-9bc9-c26d882d3127"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Famille (Régime matrimonial, liens familiaux, noms de la famille ou des proches, âges…)", "uuid":"ed611023-61e9-4736-a687-3d6ccfc9352f.8f3fb88f-f160-4cc6-8481-5e44292ea5e5", "natureUuid":"c04035de-5959-449c-853f-b863f0261289", "origineUuid":"eab8fa24-c98e-4d9e-9db0-82d1223cb825.2a38fb76-579e-4a58-bdd9-10a6454eec93.99bc228a-c4f6-491b-99c9-0c5748c48a27"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Référence d’identité (n° matricule interne employeur, n° de titre d’identité, info contenues dans ce titre)", "uuid":"62563811-8653-4d74-9451-47af2cc6ecbb.43e3b9df-d2d3-4d45-b5d8-cfe432f7c7b3", "natureUuid":"e9da86de-d568-4475-b115-ddf6da87e118", "origineUuid":"53dc2b5c-9166-405e-9cf8-ca55637123fb.5ebbec27-83fc-4053-8dc0-0623327ba8fb.e2e09d5a-6e42-4b01-88f5-e9a9dedfd0b6"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Documents d’identité (Copie pièce identité)", "uuid":"342d8cc5-ef7f-46f2-8bfe-bffa94fd3163.8aa9328d-f586-4aa7-ae56-39f3d487b4d2", "natureUuid":"1933494c-b193-4eaf-941f-b5986a3cd7dc", "origineUuid":"60d9820b-27c1-4fbf-b2dd-1689fb53d8e1.f5fd2993-b64c-4611-b828-d022e8c47189.fd00d0c6-3348-4e17-a312-9af176ed8cac"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Photo", "uuid":"5be9c29b-1ca7-456d-a96f-3aefc125c87c.0ae013bd-9c12-4250-a211-0e4ad7d4e502", "natureUuid":"d605f47b-5a84-4543-be18-9f697680ed04", "origineUuid":"eaec82d4-8d21-463f-9816-7c83d063e08c.b35fc8ba-f99c-4001-81d4-0ac4d48c419c.24882284-883d-489b-a6db-4640ed157010"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Autres numéros d’identification (hors NIR) (Immatriculation, badge, login, pseudo)", "uuid":"a39260c2-5d68-40cc-a4d9-af397eebb9cc.2e7fee53-54a0-43e8-9fd1-023a2c1ffca2", "natureUuid":"e4ca3605-9919-44b3-a6cf-b513d2bfe936", "origineUuid":"00c0fa54-63eb-425c-ba7f-cbb05019497b.1d4095ad-ff75-4fe6-aca9-58a684b89bed.7f94501b-67d6-4bac-8392-04981a056ebf"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Mot de passe", "uuid":"ae155868-dc9b-4922-b4d8-e97b3e1b19c9.3e181f30-887c-4eb0-a9a8-4335abfc383e", "natureUuid":"c0d116df-8426-4beb-9f41-e277e8f49a6d", "origineUuid":"86b17cb3-caa3-4591-a169-ed2ff41d7afe.10f3f4ac-74e1-4480-877f-c9bf2db53d43.14f74599-901c-41b3-a543-c950e376529e"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Enregistrement (Voix, images)", "uuid":"3409cd44-ac92-490e-8780-1669b612291e.4223181f-6465-4d69-9ae9-fed2bdd74a64", "natureUuid":"e6f91d32-9cbd-47d9-ba7c-61f0341d254b", "origineUuid":"8e218046-f849-4d31-a6fb-a325d9a42dfe.6333bebb-1970-4459-b536-31def5ff417e.98ae1786-6869-474f-b09d-54ef6cdfcd73"}) %}
+
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Coordonnées personnelles", "uuid":"87825a7a-d207-4c7f-8499-17ae799e42f0.f8b112c5-0e90-48e4-bded-bbcae25b10cf", "natureUuid":"b1386cec-c85d-4d28-834a-f7999f3c4ef2", "origineUuid":"f3e08b53-54d2-41b7-8320-99e1be103b2e.ddcb80e9-cb33-4149-98de-6c945f7b30bc.95dcb81a-8784-4b09-9e10-a79e9902e383"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"1", "texte":"Coordonnées professionnelle", "uuid":"f76d47ab-88e4-423f-875a-664de8d31d30.ee85143c-6e0e-4e76-97c3-dd1203ad0c11", "natureUuid":"3b4c01ab-cf31-4b18-8831-eae29055e0c6", "origineUuid":"dfed5dba-6cb5-46e5-9407-405b324c9b3e.aff2a209-3505-48d7-948d-ea2de9d40c14.970a2b51-ea93-418c-8920-54c9b162ec15"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Vie personnelle hors bien être santé (habitude de vie, situation familiale, habitat, déplacements…)", "uuid":"e6bc72db-9209-42d1-b5e5-40b8961bfc28.44b60661-6f91-434a-94be-f85fd52e5fd4", "natureUuid":"d85aa1d2-3d35-4a8e-a68d-08e1b4e1aa04", "origineUuid":"1a2d554f-db83-41f8-b813-d5e8e6520097.ee57b23c-a8bc-4b81-97b2-e4b6ad635cd4.fefe62f0-0899-4d73-8725-6e45168561d5"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Vie personnelle concernant bien-être et santé (dépendance, exercice physique, comportements alimentaires, régimes…)", "uuid":"8699d99a-1104-4d11-a9fb-9474ab84b767.bc508baa-0f18-472b-b792-65707f722555", "natureUuid":"72548e57-27c9-41d7-8221-8c02eaad98c9", "origineUuid":"065ad05f-bd74-4f54-bc0b-b1d12e39f057.8d4c8087-463f-45ae-9333-f0cbb6292606.39a58783-7051-4a41-abb2-475b7c75e0a3"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"1", "texte":"Vie professionnelle (CV, diplôme, distinction…)", "uuid":"c3a12fe0-32e3-4f86-9242-080e49ec6306.acda5971-68a9-4e2f-8f93-56b8e833aa72", "natureUuid":"d123a9dd-69d4-4a42-b84b-efb5426e0280", "origineUuid":"a5e97c6c-771c-4bbc-bf58-2dc0e85f6583.e2d80620-27b3-4244-bcd7-34e32d4e68ab.ef23b4b8-e70f-4119-b9d3-eb4da9954469"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Travail professionnel (Heures entrées sortie, temps de travail, déplacements, licences, inventions…)", "uuid":"f3d3469b-d3c1-495f-b06c-65e59494d74d.fdb4c017-e380-4ae1-9c90-5824bb06b648", "natureUuid":"359ace0c-bef2-4767-8b79-ee2693f6f5c6", "origineUuid":"09cff7bd-4d64-4d10-a764-f150495a8cd8.6b0539ef-18e4-4ffd-8844-78337f15c066.d7ec2d97-e0ad-484e-939c-06aabb7162eb"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Evaluation professionnelle", "uuid":"d0f0dd53-6cc3-4da5-85c7-44f7fd59f3fe.ed76ba6c-fc7b-42bc-8ac8-6d887a08d11d", "natureUuid":"9b0c6597-2452-44f1-ade5-d8b6bc82c11c", "origineUuid":"d0bb58e9-ab21-412f-9487-80fbfc2bb1bd.9d9884bb-e850-4260-8dd5-e526044d4265.89b21cf9-2b8f-4e18-bcaf-a99931d7410f"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Agrément professionnel", "uuid":"bb8a4805-a0a8-48c9-a479-1ed6c67a23af.bb8d312a-139b-4b20-a5ea-dc7b960e4e6f", "natureUuid":"6886c88b-5b25-41cb-9246-fc9af09ddc1a", "origineUuid":"533ad25f-faaf-494c-8833-10880d8f46e9.eb2e2d41-db43-408a-b6fa-bdbc075f2cc1.c9131381-f6da-4157-b52b-5dcb7869d4d9"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"1", "texte":"Formations suivies", "uuid":"36dffbac-85d7-4044-bb5b-3f56a69dc13c.18118f42-403a-44b0-be9d-09295bffef8b", "natureUuid":"fbac774a-330a-4aea-882e-add098362e37", "origineUuid":"27e8196b-1dc5-4d98-bac2-b28af1abf1a8.3ea61290-f300-4cff-ba88-7a19392e958c.b6fcb9b0-1840-44f7-8fbf-394e358e0308"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Situation économique et financière(Salaire, primes, autres éléments d’ordre financier, charges, cotisations, saisie…)", "uuid":"0ab6f0c3-b3a1-44d5-8cdf-b93c32327cca.ef4efbcc-4ed5-4afa-8fc8-6c39c928c5fc", "natureUuid":"906d3fe9-3347-47eb-837c-a5d13fafadfb", "origineUuid":"de483c38-a22f-4d19-8dff-03cf1191f108.4303fdca-ae80-4490-aa04-615b7cb6b897.ea716002-3bba-4bd7-a298-594120ba9c66"}) %}
+
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Dimension économique (indicateurs de revenus, données type PAC accessibles sur internet, etc.)", "uuid":"ec3c69eb-1730-4f9f-aae6-0c9d00acf30c.582c7d0b-242a-4882-beef-0d2aa1384814", "natureUuid":"06b38d86-7a24-4c3d-ab73-42c4ae82a588", "origineUuid":"5aa0ccee-db9d-44e1-ab00-b436c211e923.43ea4415-9c6a-4969-92cc-e944623039e7.9d0a9604-aef7-42e5-ae6a-ab4545757e73"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Réclamations et contentieux (hors pénal) (Réclamations, recouvrement, défauts de paiement, contentieux, éléments de procédure hors pénal…)", "uuid":"8cbabaa0-b235-433a-9f47-a92a09458a94.16f4e3a0-e6ce-496e-8395-2a8d64b80b64", "natureUuid":"ea80e7df-d5cc-4be0-a40e-6dc4d5ad6c26", "origineUuid":"3a148ab5-6387-4b1c-b9dd-3a869a1e9121.86eab00e-870e-478d-ab25-fa41841a1b05.e5dc3fa2-b90b-42a8-bec9-9811d689c4f4"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Fraudes (Preuves éléments de fraude…)", "uuid":"5aaf7b0e-9263-4c23-9cdb-98cbd0097b07.a10c9a5e-a9f8-45b4-a564-65ad795d978c", "natureUuid":"767e7925-6034-4b9b-89e1-0fbaaab9ebc7", "origineUuid":"3b2e26c0-e561-427b-929c-5dfa7fbdaa19.0242b2b3-6ab9-4ac2-b99d-d6047f9906c6.e7c872b9-1cb1-479e-aa76-5ae91deb774f"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"2", "texte":"Données de connexion (Adresse IP, logs, cookies…)", "uuid":"f37b7ed8-0dfe-4b23-854c-58138651079d.15a3264a-55f7-4138-a3ec-3dc419c19734", "natureUuid":"1f583203-289d-4af6-85d8-cc9ac0fb3109", "origineUuid":"3c52433b-31b1-45e1-9b71-f706a156e685.4c42f876-3f84-4416-b37f-2923a244b6a4.f8b2a2ba-d63f-4aad-a6ed-2bd80bb70008"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"3", "texte":"Données de localisation (déplacements, données GPS…)", "uuid":"cc9cecd5-3851-409d-8298-df5e720cf9a8.a320619b-2d9e-4d0b-905e-c5df1c887c6f", "natureUuid":"95324901-cf73-4f14-95d0-39ad6c366e7b", "origineUuid":"e1d6c3d9-7b91-4313-81a2-bec7ee070716.a1ec9b64-c214-4391-87f0-09f4bfcc0aea.2e68a882-5b0d-4dce-a6e3-faef3806c8d1"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"N° de sécurité sociale", "uuid":"9737a81e-2a06-4cf7-b3c0-97ddd0726fda.823f1316-1e70-4e08-9b65-c0595fda4dfd", "natureUuid":"9d9acf93-3158-4b51-9012-762d501164aa", "origineUuid":"018ad8b9-91b6-4f53-b9b7-783786225d8c.df6b8dca-c888-49f1-bc69-c806b2e768aa.e27dd3df-9cd8-41b5-90ff-cd4150fae97f"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Infractions, condamnations, mesures de sureté", "uuid":"c9f11d72-ee9a-43ad-b58d-a35e9e49e93c.3ebc959d-6dcd-4d1d-9457-4ed72949f5b4", "natureUuid":"fbf10953-2cda-4330-89fc-d5a9f47ac411", "origineUuid":"95443047-3d92-4b3e-890b-2ac3fbfeb59d.a8bc7adf-4dff-4c55-915a-333db400a8f3.27d20823-6159-4df6-bfd9-1dd4f316e5d5"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Opinions (politiques, philosophiques syndicale ou religieuses), origines (raciales ou ethniques)", "uuid":"ca005003-7105-4c2c-b20e-8df1b3f713d3.a777df09-4c8c-43b6-999d-36f62d33eb3e", "natureUuid":"11f877e8-ca44-4c01-a91f-6bb2e53ae142", "origineUuid":"5d475108-ab24-41dc-8a53-71545f88990e.edc1e0e0-a05d-43e6-b0d0-f5f339a947f9.7cf624ab-70d2-4edd-a4c4-2cf7039e051f"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Données biométriques, génétiques", "uuid":"f32f862a-1da9-4a69-b8ee-489ec944b3c5.7a7dbfd6-54a0-4d8e-9ba7-15f6fa589760", "natureUuid":"c81af163-801b-46da-9fb0-2ff22d39afd6", "origineUuid":"12f77cf3-4c1b-49ed-8ed1-737eeb114a50.9b076a23-a21f-4ddb-ad2f-f3e42ae62bb6.87bb1640-c216-404d-a033-702130ad49cc"}) %}
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Données de santé hors dossiers médical", "uuid":"a9c038c1-6496-4468-9588-80ecf2075a6e.6ff5952a-5c33-462d-b041-e82352d66f8e", "natureUuid":"7f19e035-0da2-4463-8615-0d61da5dbbcf", "origineUuid":"ecb04a4d-0976-4c49-829e-87858ca9615e.c08bef01-eb29-42c6-be23-39edd9ad4da1.2693b092-4e49-45b7-b5a2-0f3e8b0435eb"}) %}
+
+    {% do precisionsNatures.append({"niveauImpact":"4", "texte":"Données de santé issues du dossier médical", "uuid":"a54533fa-8a2a-43a0-b651-3fa8b8024fda.7165cad5-2df5-4d1f-9d71-a09fa4c869a1", "natureUuid":"2527d367-4601-423a-a226-53833debb69f", "origineUuid":"27112458-3801-44f6-b24c-ba26017d0d44.9e49cc2e-a095-4bb8-9709-02042d314a65.ebb199f0-f380-44c3-9843-21198eb17a44"}) %}
+
+    {% set autreImpact = repliesMap[[questionJDDUuid, JDDUuid, "1713acb8-ef81-44a7-bd03-8cb3c95606c1.7b40af52-a792-4a51-974b-5d45610354c7.f5711548-9850-4739-97cf-e0acc6b3e7fc"] | reply_path] | reply_str_value %}
+    {% do precisionsNatures.append({"niveauImpact":autreImpact, "texte":"Autres types de données utilisées (ex : données d’analyse sensorielle) ", "uuid":"1713acb8-ef81-44a7-bd03-8cb3c95606c1.7b40af52-a792-4a51-974b-5d45610354c7", "natureUuid":"602e0fca-9c4c-424f-b3ac-e8d4c3d4f71c", "origineUuid":"a37eda69-6ace-4852-8080-e12dd6442179.400a6a6b-f287-4f7f-ae7b-c441fd195bde.221eb614-bb41-482c-beb5-da5b7528b56c"}) %}
+
+    {% set natures = [] %}
+    {% for precisionNature in precisionsNatures %}
+        {% set nature = {} %}
+        {% do nature.update({"niveauImpact": precisionNature.niveauImpact}) %}
+        {% do nature.update({"texte": precisionNature.texte}) %}
+        {% do nature.update({"precisionNature": repliesMap[[questionJDDUuid, JDDUuid, precisionNature.uuid, precisionNature.natureUuid] | reply_path] | reply_str_value}) %}
+        {% do nature.update({"precisionOrigine": repliesMap[[questionJDDUuid, JDDUuid, precisionNature.uuid, precisionNature.origineUuid] | reply_path] | reply_str_value}) %}
+        {% do natures.append(nature) %}
+    {% endfor %}
+    {% do JDD.update({"natures": natures}) %}
+
+    {# Section 3.3 #}
+    {% do JDD.update({"documentMeta": "e63ba5a2-023b-4194-b1a9-e8840ca841f0" == repliesMap[[questionJDDUuid, JDDUuid, "9a142ad7-b3c3-49d1-aae1-49389cb7f297"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"standardMeta": repliesMap[[questionJDDUuid, JDDUuid, "a69dc4f8-2381-4144-8994-f8bb02e5695a"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"formatDonnees": repliesMap[[questionJDDUuid, JDDUuid, "d7cf30dd-5022-4d9d-afcd-c9cf3a329d86"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"gestionFichiers": repliesMap[[questionJDDUuid, JDDUuid, "e47867a1-27d4-4599-bd23-c9436ffe8512"] | reply_path] | reply_str_value }) %}
+
+    {# Section 3.4 #}
+    {% do JDD.update({"transfertHorsUE": "4aeba4dd-2c65-4c71-968e-0a75dbcd4f20" == repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848"] | reply_path] | reply_str_value}) %}
+        {% if JDD.transfertHorsUE %}
+            {% set questionPaysHorsUE = [questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.51164384-d427-4e1c-8435-0c814ba7cd25"] | reply_path %}
+            {% do JDD.update({"paysHorsUE": []}) %}
+            {% for paysUUID in repliesMap[questionPaysHorsUE] | reply_items %}
+                {% set pays = {} %}
+
+                {% do pays.update({"nom": repliesMap[[questionPaysHorsUE, paysUUID, "8e619d94-3a99-4d8b-b1bc-7bff0b9d0a84"] | reply_path] | reply_str_value}) %}
+
+                {% do pays.update({"destinatairePrestataire": "3b4d7eb1-c974-4794-b0c6-b5f0f9d7584b" == repliesMap[[questionPaysHorsUE, paysUUID, "2a4e7e1f-89c9-45c6-8106-03a96029d910"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"destinatairePartenaire": "2014ca0b-f510-4381-942b-1b7082ba7b07" == repliesMap[[questionPaysHorsUE, paysUUID, "2a4e7e1f-89c9-45c6-8106-03a96029d910"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"destinataireAutre": "520e6698-1705-4b25-93dc-82c1c231e7ea" == repliesMap[[questionPaysHorsUE, paysUUID, "2a4e7e1f-89c9-45c6-8106-03a96029d910"] | reply_path] | reply_str_value}) %}
+                {% if pays.destinataireAutre %}
+                    {% do pays.update({"precisionAutreDestinataire": repliesMap[[questionPaysHorsUE, paysUUID, "2a4e7e1f-89c9-45c6-8106-03a96029d910.520e6698-1705-4b25-93dc-82c1c231e7ea.be8df109-3ba8-4b65-be16-3475a418bd30"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+
+                {% do pays.update({"natureLienJuridique": repliesMap[[questionPaysHorsUE, paysUUID, "a8c08615-04f6-4b4b-8b35-312491a217da"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"finaliteTransfert": repliesMap[[questionPaysHorsUE, paysUUID, "f634ce6c-199c-4b34-add0-ccecd7e8ce9d"] | reply_path] | reply_str_value}) %}
+
+                {% do pays.update({"categorieSalarie": "fc49fec2-496f-4a1c-8802-4cea4d07dac6" == repliesMap[[questionPaysHorsUE, paysUUID, "62497cde-4584-4f29-bdc4-fea3d099ba3e"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"categorieEtudiant": "1ebec0ef-e4fb-4505-b50c-ecb6754db53f" == repliesMap[[questionPaysHorsUE, paysUUID, "62497cde-4584-4f29-bdc4-fea3d099ba3e"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"categorieAutre": "e7368fad-67af-4811-b147-a89bf013d1cb" == repliesMap[[questionPaysHorsUE, paysUUID, "62497cde-4584-4f29-bdc4-fea3d099ba3e"] | reply_path] | reply_str_value}) %}
+                {% if pays.categorieAutre %}
+                    {% do pays.update({"precisionCategorieAutre": repliesMap[[questionPaysHorsUE, paysUUID, "62497cde-4584-4f29-bdc4-fea3d099ba3e.e7368fad-67af-4811-b147-a89bf013d1cb.3ce60f26-2488-4546-9bc8-2ed67cf63eec"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+
+                {% do pays.update({"natureTraitement": repliesMap[[questionPaysHorsUE, paysUUID, "f4b109c8-10ca-404d-b214-5afa345ca7be"] | reply_path] | reply_str_value}) %}
+
+                {% do pays.update({"categorieDonnees": []}) %}
+                {% do pays.categorieDonnees.append("54f31ed9-bc0e-4737-b5be-9921ef8fe6c9" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("89bcc810-b46b-4596-82d5-3f1259afbbf1" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("11b1b626-db6d-473e-93b5-6602c40ca477" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("dfea977b-22fc-4954-859a-4c9bb8e742ac" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("6f50f5f7-0c64-4ebd-97f4-857ef8276e1b" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("e19235f2-7a4c-40a9-901a-b2087d42cd01" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("58e56013-035e-49a7-b90d-27229d34798f" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("35763977-29c9-48ce-9d9e-4c9e24d6a510" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("b0de69ee-822e-4288-86dc-7c2af1ebdf7f" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("81e68da1-fed6-4b09-9ae4-74767315c872" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("2708b608-6b7e-4670-b16b-000b7529df14" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+                {% do pays.categorieDonnees.append("20288565-dd34-4987-a06e-28807f2566ef" in repliesMap[[questionPaysHorsUE, paysUUID, "fa064348-082a-4b29-9e7a-07c1af2c86bb"] | reply_path] | reply_items ) %}
+
+                {% do pays.update({"garantiePays": "94fe69f3-3a49-482c-88bf-675d2262696b" == repliesMap[[questionPaysHorsUE, paysUUID, "f5864b87-4709-4f0c-89f9-76bdf84b031e"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"garantieArticle": "98b11cd2-7969-4271-8c90-c209bd55b974" == repliesMap[[questionPaysHorsUE, paysUUID, "f5864b87-4709-4f0c-89f9-76bdf84b031e"] | reply_path] | reply_str_value}) %}
+                {% if pays.garantieArticle %}
+                    {% do pays.update({"precisionGarantieArticle": repliesMap[[questionPaysHorsUE, paysUUID, "f5864b87-4709-4f0c-89f9-76bdf84b031e.98b11cd2-7969-4271-8c90-c209bd55b974.dd858233-20d0-48ec-8f04-a7507c4bf6a1"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+                {% do pays.update({"garantieClause": "555624e7-2994-4f8d-ae2e-8b6f961c29bd" == repliesMap[[questionPaysHorsUE, paysUUID, "f5864b87-4709-4f0c-89f9-76bdf84b031e"] | reply_path] | reply_str_value}) %}
+                {% do pays.update({"garantieRegleInterne": "c4c68005-4e76-4b9e-9970-8c816ef16b0b" == repliesMap[[questionPaysHorsUE, paysUUID, "f5864b87-4709-4f0c-89f9-76bdf84b031e"] | reply_path] | reply_str_value}) %}
+
+                {% do JDD.paysHorsUE.append(pays) %}
+            {% endfor %}
+
+            {% do JDD.update({"moyenTransfertConnuUE": "3ad3b3bb-9dad-465f-8244-43ed76587f4a" == repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.ddf18765-68de-4e53-aa01-6e2f0cf6e494"] | reply_path] | reply_str_value}) %}
+            {% if JDD.moyenTransfertConnuUE %}
+                {% do JDD.update({"transfertMessagerieUE": "29dbb222-10be-4d05-8855-9fb1c7555588" == repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.ddf18765-68de-4e53-aa01-6e2f0cf6e494.3ad3b3bb-9dad-465f-8244-43ed76587f4a.748e823d-542e-40ff-96b4-5b106eead658"] | reply_path] | reply_str_value}) %}
+                {% do JDD.update({"transfertDepotUE": "1f3a6e21-b5fd-4c39-a4e8-edea03fba616" == repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.ddf18765-68de-4e53-aa01-6e2f0cf6e494.3ad3b3bb-9dad-465f-8244-43ed76587f4a.9e944dad-3920-4d40-83f2-a16e98b8e2a8"] | reply_path] | reply_str_value}) %}
+                {% if JDD.transfertDepotUE %}
+                    {% do JDD.update({"precisionTransfertDepotUE": repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.ddf18765-68de-4e53-aa01-6e2f0cf6e494.3ad3b3bb-9dad-465f-8244-43ed76587f4a.9e944dad-3920-4d40-83f2-a16e98b8e2a8.1f3a6e21-b5fd-4c39-a4e8-edea03fba616.e52d1e49-fb81-44d9-b9b3-e018cd593175"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+
+                {% do JDD.update({"transfertAutreUE": "3a64c866-3a12-41f2-8fd6-d65ab100a097" == repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.ddf18765-68de-4e53-aa01-6e2f0cf6e494.3ad3b3bb-9dad-465f-8244-43ed76587f4a.1074651e-8c04-4ec0-b7ba-398994ccda34"] | reply_path] | reply_str_value}) %}
+                {% if JDD.transfertAutreUE %}
+                    {% do JDD.update({"precisionTransfertAutreUE": repliesMap[[questionJDDUuid, JDDUuid, "e21ccfc7-6eaa-488d-803b-d7dea022e848.4aeba4dd-2c65-4c71-968e-0a75dbcd4f20.ddf18765-68de-4e53-aa01-6e2f0cf6e494.3ad3b3bb-9dad-465f-8244-43ed76587f4a.1074651e-8c04-4ec0-b7ba-398994ccda34.3a64c866-3a12-41f2-8fd6-d65ab100a097.abfac77b-9b55-4efc-9a35-717b9b238a82"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        {% do JDD.update({"transfertAvecTiers": "5f25cba1-ac8f-44da-b1d2-05401a75ce66" == repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7"] | reply_path] | reply_str_value}) %}
+        {% if JDD.transfertAvecTiers %}
+            {% do JDD.update({"moyenTransfertConnu": "5259f195-5890-4ce5-94f9-ea27411eb304" == repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7.5f25cba1-ac8f-44da-b1d2-05401a75ce66.520d7eba-99bc-42e1-b81d-a74d7a26214e"] | reply_path] | reply_str_value}) %}
+            {% if JDD.moyenTransfertConnu %}
+                {% do JDD.update({"transfertMessagerie": "5758171a-2230-472a-a7ab-107c59a3a351" == repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7.5f25cba1-ac8f-44da-b1d2-05401a75ce66.520d7eba-99bc-42e1-b81d-a74d7a26214e.5259f195-5890-4ce5-94f9-ea27411eb304.36ee0123-da0f-4d25-9de5-0013c7f3195b"] | reply_path] | reply_str_value}) %}
+
+                {% do JDD.update({"transfertDepot": "fbd67c4b-ed03-4c1b-bea9-66610d19c0d5" == repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7.5f25cba1-ac8f-44da-b1d2-05401a75ce66.520d7eba-99bc-42e1-b81d-a74d7a26214e.5259f195-5890-4ce5-94f9-ea27411eb304.be0ae214-158b-4a29-a1a4-59e521fb85ab"] | reply_path] | reply_str_value}) %}
+                {% if JDD.transfertDepot %}
+                    {% do JDD.update({"precisionTransfertDepot": repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7.5f25cba1-ac8f-44da-b1d2-05401a75ce66.520d7eba-99bc-42e1-b81d-a74d7a26214e.5259f195-5890-4ce5-94f9-ea27411eb304.be0ae214-158b-4a29-a1a4-59e521fb85ab.fbd67c4b-ed03-4c1b-bea9-66610d19c0d5.1c413e4a-79cd-46fd-beb8-f72eb382fe88"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+
+                {% do JDD.update({"transfertAutre": "3c5e6638-a5bd-404e-b820-2c88a27dfecd" == repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7.5f25cba1-ac8f-44da-b1d2-05401a75ce66.520d7eba-99bc-42e1-b81d-a74d7a26214e.5259f195-5890-4ce5-94f9-ea27411eb304.ac461f3a-de8a-46a1-a670-0ea9e98e8eb3"] | reply_path] | reply_str_value}) %}
+                {% if JDD.transfertAutre %}
+                    {% do JDD.update({"precisionTransfertAutre": repliesMap[[questionJDDUuid, JDDUuid, "c964dc1e-6099-4789-8434-35ae0c8a7df7.5f25cba1-ac8f-44da-b1d2-05401a75ce66.520d7eba-99bc-42e1-b81d-a74d7a26214e.5259f195-5890-4ce5-94f9-ea27411eb304.ac461f3a-de8a-46a1-a670-0ea9e98e8eb3.3c5e6638-a5bd-404e-b820-2c88a27dfecd.989b28e5-b369-4933-8760-f3fb365837ce"] | reply_path] | reply_str_value}) %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        {% do JDD.update({"reglesAccesDefinies": "0c657db1-505a-4ec0-a1dc-873a05f2254d" == repliesMap[[questionJDDUuid, JDDUuid, "d5490894-ec0f-41d4-b999-aeef6c9c8034"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"reglesAccesRedigees": "e496c67c-ce9b-41d2-a377-cc773fae511d" == repliesMap[[questionJDDUuid, JDDUuid, "a25c907e-8d07-44e0-a366-d2f1b00a5b2c"] | reply_path] | reply_str_value}) %}
+        {% do JDD.update({"nomTutelle": repliesMap[[questionJDDUuid, JDDUuid, "88052fb0-57f2-4af7-b817-53a94a8bbe43"] | reply_path] | reply_str_value}) %}
+
+        {% do JDD.update({"stockagePosteTravail": "c49e1e4e-3965-4503-8d18-ca87bcc63a99" in repliesMap[[questionJDDUuid, JDDUuid, "235238d8-b424-46af-8546-e762bdcd1118"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"stockageServeurUnite": "3b3f454c-ba57-4b07-ac5a-c8a9af571503" in repliesMap[[questionJDDUuid, JDDUuid, "235238d8-b424-46af-8546-e762bdcd1118"] | reply_path] | reply_items}) %}
+        {% do JDD.update({"stockageServeurCentre": "bd76ff9e-d73b-4ad9-82a3-1f5c49d62640" in repliesMap[[questionJDDUuid, JDDUuid, "235238d8-b424-46af-8546-e762bdcd1118"] | reply_path] | reply_items}) %}
+
+        {% do JDD.update({"stockageDataverseInterne": "20afb7d2-6263-4ca2-8f4e-9d71b920d9b9" == repliesMap[[questionJDDUuid, JDDUuid, "aa9edd28-cf22-4ae0-9aae-1d85a1ad89ae"] | reply_path] | reply_str_value}) %}
+        {% if JDD.stockageDataverseInterne %}
+            {% do JDD.update({"precisionDataverseInterne": repliesMap[[questionJDDUuid, JDDUuid, "aa9edd28-cf22-4ae0-9aae-1d85a1ad89ae.20afb7d2-6263-4ca2-8f4e-9d71b920d9b9.af9c7e89-be53-4108-aea2-688876763761"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"stockageAutreDataverse": "3d8b1f04-e1c0-43a0-bdb3-377dcf2c63be" == repliesMap[[questionJDDUuid, JDDUuid, "cb865432-46f6-4eec-aea3-8459e3929f0f"] | reply_path] | reply_str_value}) %}
+        {% if JDD.stockageAutreDataverse %}
+            {% do JDD.update({"precisionAutreDataverse": repliesMap[[questionJDDUuid, JDDUuid, "cb865432-46f6-4eec-aea3-8459e3929f0f.3d8b1f04-e1c0-43a0-bdb3-377dcf2c63be.eed9460c-b212-4e72-918a-560010214292"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"solutionPartenaire": "ea2cf132-857b-4c5c-8809-f3d8d22112b0" == repliesMap[[questionJDDUuid, JDDUuid, "7df22f9d-d9d8-4256-ac79-a42042d1d03d"] | reply_path] | reply_str_value}) %}
+        {% if JDD.solutionPartenaire %}
+            {% do JDD.update({"precisionPartenaire": repliesMap[[questionJDDUuid, JDDUuid, "7df22f9d-d9d8-4256-ac79-a42042d1d03d.ea2cf132-857b-4c5c-8809-f3d8d22112b0.7abca6ff-84d0-4da8-8be4-3fb664e7b3ac"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"solutionSousTraitant": "eff7c8b4-a84a-44d0-8a86-8ef5bd857a65" == repliesMap[[questionJDDUuid, JDDUuid, "9e769f5c-3d79-4720-a967-7a23e4b1d2d0"] | reply_path] | reply_str_value}) %}
+        {% if JDD.solutionSousTraitant %}
+            {% do JDD.update({"precisionSousTraitant": repliesMap[[questionJDDUuid, JDDUuid, "9e769f5c-3d79-4720-a967-7a23e4b1d2d0.eff7c8b4-a84a-44d0-8a86-8ef5bd857a65.c7ea4c16-4855-47fa-b6bf-b1f04ef6e043"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"solutionGratuite": "8dabf347-371b-4c42-862a-84d21ee93858" == repliesMap[[questionJDDUuid, JDDUuid, "1110ec9e-37ec-4150-bc64-374d29a001b0"] | reply_path] | reply_str_value}) %}
+        {% if JDD.solutionGratuite %}
+            {% do JDD.update({"precisionGratuite": repliesMap[[questionJDDUuid, JDDUuid, "1110ec9e-37ec-4150-bc64-374d29a001b0.8dabf347-371b-4c42-862a-84d21ee93858.9c2401a4-9f67-4b0c-afe0-ed0c9bffe317"] | reply_path] | reply_str_value}) %}
+        {% endif %}
+
+        {% do JDD.update({"frequenceSauvegarde": repliesMap[[questionJDDUuid, JDDUuid, "ed97aa0a-ad15-4e33-be36-a339ecf54c2e"] | reply_path] | reply_str_value}) %}
+
+
+
+    {# Section 3.5 #}
+    {% do JDD.update({"confidentialitePublic": "94adc91e-98b7-4737-a21d-557ab31a6814" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"confidentialiteLimite": "d6f6ef2e-62e3-467c-9911-23cace669f0d" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"confidentialiteConfidentiel": "333e76ca-1979-4dba-af67-91e09689189d" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"confidentialiteRestreint": "d88377f7-ce26-4f3d-825c-2476a0f2df60" == repliesMap[[questionJDDUuid, JDDUuid, "270bb47b-9380-4e85-b1ff-3459a7cb2c0a"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"ruptureNegligeable": "09cfa287-7179-4513-b202-da083602463c" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"ruptureLimite": "2032459a-2fc2-4763-80c7-69e5a4cbc80a" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"ruptureImportant": "44ee2913-ab70-4cfd-9e67-183fdcc05a4c" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"ruptureMaximal": "0994df85-383d-4368-a3ab-9140b8ac9329" == repliesMap[[questionJDDUuid, JDDUuid, "354e53f4-3efc-49fc-9b07-83cbd9e4d422"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"integriteNegligeable": "6e1f9eb6-56bb-4478-9bac-9cd96f8c4817" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"integriteLimite": "ad7b007f-1975-4e1e-919b-1b356748ded5" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"integriteImportant": "08df23ad-906a-401d-a39e-19de1dba2601" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"integriteMaximal": "43b000b3-f3ba-453e-9d2b-409ff803a422" == repliesMap[[questionJDDUuid, JDDUuid, "31527388-0a40-4647-82c0-4d3797a40fe6"] | reply_path] | reply_str_value}) %}
+
+    {% do JDD.update({"disponibiliteNegligeable": "80e00bdf-a27d-4513-98b6-44142193145e" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"disponibiliteLimite": "c22821ab-b589-4dac-acd0-83e383a2b2d9" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"disponibiliteImportant": "6e16d2f9-6384-4d7b-bfbf-29b876527a47" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+    {% do JDD.update({"disponibiliteMaximal": "18435e22-8e65-4bd5-806b-7379e893f412" == repliesMap[[questionJDDUuid, JDDUuid, "04cbd5c3-19ce-4a57-af26-184b412e41fe"] | reply_path] | reply_str_value}) %}
+
+    {# Section 3.6 #}
+    {% do JDD.update({"dureeConservation": repliesMap[[questionJDDUuid, JDDUuid, "4efd0042-eeb1-4e60-bddf-3fa85421c5ee"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"volumeDonnees": repliesMap[[questionJDDUuid, JDDUuid, "2ff6d79d-3f8e-49d6-a700-52ea3850ac83"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"procedureConservation": repliesMap[[questionJDDUuid, JDDUuid, "e66659cb-f3af-4f78-b390-5f403cf5fea1"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"responsableConservation": repliesMap[[questionJDDUuid, JDDUuid, "9f8c3d54-a4db-4ea9-b437-0ea8c4a17b63"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"coutsConservation": repliesMap[[questionJDDUuid, JDDUuid, "32e17b46-626b-4014-ab9e-2a2cf4c421a6"] | reply_path] | reply_str_value }) %}
+    {% do JDD.update({"donneesArchives": "da57a820-1f04-49d4-835e-36896dc9585d" == repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676"] | reply_path] | reply_str_value }) %}
+    {% if JDD.donneesArchives %}
+        {% set typeArchivesUuids = repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.da57a820-1f04-49d4-835e-36896dc9585d.0ec97616-4ecb-4574-99b3-6013a1f6649e"] | reply_path] | reply_items %}
+        {% do JDD.update({"archiveConsentement": "f535480d-2513-4016-abe5-7b79226e5260" in typeArchivesUuids}) %}
+        {% do JDD.update({"archiveQuestionnaire": "28f3fd61-6730-4419-b7c0-450b56f01ba0" in typeArchivesUuids}) %}
+        {% do JDD.update({"archiveDonnesAnon": "f5d4d960-75ba-4d18-962a-0812dc576594" in typeArchivesUuids}) %}
+        {% do JDD.update({"archiveAutre": "6a230a6d-6990-4031-ba90-51b354d30433" == repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.da57a820-1f04-49d4-835e-36896dc9585d.93494116-4bed-4c8c-867f-e17469066095"] | reply_path] | reply_str_value }) %}
+        {% if JDD.archiveAutre %}
+            {% do JDD.update({"precisionArchiveAutre": repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.da57a820-1f04-49d4-835e-36896dc9585d.93494116-4bed-4c8c-867f-e17469066095.6a230a6d-6990-4031-ba90-51b354d30433.a4645b50-26c1-4e44-8ca2-0d5cc849ab92"] | reply_path] | reply_str_value }) %}
+        {% endif %}
+    {% else %}
+        {% do JDD.update({"destructionDonnees": "45167149-0291-49ed-8278-bed873676c13" == repliesMap[[questionJDDUuid, JDDUuid, "1cac3dd7-5f0a-40d2-a76e-db6da134d676.6016d2e4-d883-427b-bba8-aa797e4313c9.93da82ff-5636-4137-9b20-3b1e6b3e4bbe"] | reply_path] | reply_str_value }) %}
+    {% endif %}
+
+    {% do JDDs.append(JDD) %}
+{% endfor %}
+
+{# Chapitre 4 Jeux de données externes #}
+{% set questionJDDEUuid = "7dd0abe3-0cb1-4bd8-9ece-35726e127963.cbe48a3c-9307-45d7-93e9-b83f8f5aefaa.06431b0d-2f4a-40e1-9aec-5d27bb251241.0c7babc8-696b-45bb-a4cb-3ea808d71dc1" %}
+{% set JDDEs = [] %}
+
+{% for jDDEUuid in repliesMap[questionJDDEUuid] | reply_items %}
+
+    {% set JDDE = {} %}
+
+    {% do JDDE.update({"nom": repliesMap[[questionJDDEUuid, jDDEUuid, "13201840-f0f1-41f8-9c6c-1f5bb803a743"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"id": repliesMap[[questionJDDEUuid, jDDEUuid, "9d61a2bd-b51c-4a6e-b42d-b11c1c697db1"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"type": km.entities.answers[repliesMap[[questionJDDEUuid, jDDEUuid, "01d464b5-adee-4474-aeb0-314e6e3db75e"] | reply_path] | reply_str_value].label }) %}
+    {% do JDDE.update({"population": repliesMap[[questionJDDEUuid, jDDEUuid, "db5f2549-117c-445d-ba45-3c3a4105941e"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"echelle": repliesMap[[questionJDDEUuid, jDDEUuid, "f2dc3a85-f88a-4caa-ba4b-aca3afe089ee"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"annee": repliesMap[[questionJDDEUuid, jDDEUuid, "72e257f2-e06e-492f-ae5e-5fe1b10f89c1"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"objectifs": repliesMap[[questionJDDEUuid, jDDEUuid, "2cdf8473-46f6-446f-bd0b-9e11617e64c4"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"origine": repliesMap[[questionJDDEUuid, jDDEUuid, "7ccc2809-eb84-47c7-afb6-126d61a83d2c"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"conditions": repliesMap[[questionJDDEUuid, jDDEUuid, "b0251890-64b1-48fe-8658-8e56f6f88967"] | reply_path] | reply_str_value}) %}
+    {% do JDDE.update({"necessite": repliesMap[[questionJDDEUuid, jDDEUuid, "63845e38-4271-4e45-b79f-a9b76e71c7fa"] | reply_path] | reply_str_value}) %}
+
+    {% do JDDEs.append(JDDE) %}
+{% endfor %}
+
+
+{% set data = {} %}
+{% do data.update({"pgd": pgd}) %}
+{% do data.update({"projet": projet}) %}
+{% do data.update({"JDDs": JDDs}) %}
+{% do data.update({"JDDEs": JDDEs}) %}

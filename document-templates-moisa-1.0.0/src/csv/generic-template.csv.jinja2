@@ -1,0 +1,24 @@
+{%- extends "src/csv/abstract-template.csv.jinja2" -%}
+{%- block body -%}
+    {#- Body of the script -#}
+
+    {%- set i = namespace(value = 1) -%}
+    {%- for chapterUuid in km.chapterUuids -%}
+        {% set j = namespace(value = 1) %}
+        {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
+            {%- set question = km.entities.questions[questionUuid] -%}
+            {{- markQuestions([chapterUuid, questionUuid], question, "q" + i.value | string + "_" + j.value | string) -}}
+            {%- set j.value = j.value + 1 -%}
+        {%- endfor -%}
+        {%- set i.value = i.value + 1 -%}
+    {%- endfor -%}
+
+    {{- "\n" -}}
+
+    {%- for chapterUuid in km.chapterUuids -%}
+        {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
+            {%- set question = km.entities.questions[questionUuid] -%}
+            {{- valuesOfQuestions([chapterUuid, questionUuid], question) -}}
+        {%- endfor -%}
+    {%- endfor -%}
+{%- endblock -%}

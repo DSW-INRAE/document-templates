@@ -1,0 +1,590 @@
+{
+  "appUuid": "00000000-0000-0000-0000-000000000000",
+  "newQuestionnaire": {
+    "commentThreadsMap": {},
+    "createdAt": "2018-01-20T00:00:00Z",
+    "creatorUuid": null,
+    "description": "Some description",
+    "documentTemplate": {
+      "description": "Exported questions and answers from a questionnaire",
+      "formats": [
+        {
+          "icon": "far fa-file",
+          "isPdf": false,
+          "name": "JSON Data",
+          "uuid": "d3e98eb6-344d-481f-8e37-6a67b6cd1ad2"
+        },
+        {
+          "icon": "far fa-file-code",
+          "isPdf": false,
+          "name": "HTML Document",
+          "uuid": "a9293d08-59a4-4e6b-ae62-7a6a570b031c"
+        },
+        {
+          "icon": "far fa-file-pdf",
+          "isPdf": true,
+          "name": "PDF Document",
+          "uuid": "68c26e34-5e77-4e15-9bf7-06ff92582257"
+        },
+        {
+          "icon": "far fa-file-alt",
+          "isPdf": false,
+          "name": "LaTeX Document",
+          "uuid": "dbc94579-40d7-42c3-975c-71e30d07778b"
+        },
+        {
+          "icon": "far fa-file-word",
+          "isPdf": false,
+          "name": "MS Word Document",
+          "uuid": "f4bd941a-dfbe-4226-a1fc-200fb5269311"
+        },
+        {
+          "icon": "far fa-file-alt",
+          "isPdf": false,
+          "name": "OpenDocument Text",
+          "uuid": "15e53172-bbae-4a0c-a4d9-8f3ddf60e7b6"
+        },
+        {
+          "icon": "far fa-file-alt",
+          "isPdf": false,
+          "name": "Markdown Document",
+          "uuid": "f0533e48-f4c5-4af2-b2c1-5a47d4a247c0"
+        }
+      ],
+      "id": "global:questionnaire-report:1.0.0",
+      "name": "Questionnaire Report",
+      "phase": "ReleasedDocumentTemplatePhase",
+      "version": "1.0.0"
+    },
+    "documentTemplateId": "global:questionnaire-report:1.0.0",
+    "documentTemplatePhase": "ReleasedDocumentTemplatePhase",
+    "documentTemplateState": "UnknownDocumentTemplateState",
+    "format": {
+      "icon": "far fa-file",
+      "isPdf": false,
+      "name": "JSON Data",
+      "uuid": "d3e98eb6-344d-481f-8e37-6a67b6cd1ad2"
+    },
+    "formatUuid": "d3e98eb6-344d-481f-8e37-6a67b6cd1ad2",
+    "isTemplate": false,
+    "knowledgeModel": {
+      "annotations": [],
+      "chapterUuids": [
+        "00000000-0000-0000-0000-0000000000c1",
+        "00000000-0000-0000-0000-0000000000c4"
+      ],
+      "entities": {
+        "answers": {},
+        "chapters": {
+          "00000000-0000-0000-0000-0000000000c1": {
+            "annotations": [],
+            "questionUuids": [],
+            "text": "Before you decide to embark on any new study, it is nowadays good practice to consider all options to keep the data generation part of your study as limited as possible. It is not because we can generate massive amounts of data that we always need to do so. Creating data with public money is bringing with it the responsibility to treat those data well and (if potentially useful) make them available for re-use by others.",
+            "title": "Design of experiment",
+            "uuid": "00000000-0000-0000-0000-0000000000c1"
+          },
+          "00000000-0000-0000-0000-0000000000c4": {
+            "annotations": [],
+            "questionUuids": [],
+            "text": "",
+            "title": "Data processing and curation",
+            "uuid": "00000000-0000-0000-0000-0000000000c4"
+          }
+        },
+        "choices": {},
+        "experts": {},
+        "integrations": {
+          "32b5f11d-960b-4ce9-889f-fc7d29964122": {
+            "annotations": [],
+            "id": "bioPortal",
+            "integrationType": "ApiIntegration",
+            "itemUrl": "https://example.com/portals/{{item.id}}",
+            "logo": "",
+            "name": "Bio Portal",
+            "props": [
+              "domain",
+              "branch"
+            ],
+            "requestBody": "",
+            "requestEmptySearch": false,
+            "requestHeaders": [
+              {
+                "key": "Api-Key",
+                "value": "${apikey}"
+              }
+            ],
+            "requestMethod": "GET",
+            "requestUrl": "${baseurl}/${path}?domain=${domain}&branch=${branch}&q=${q}",
+            "responseItemId": "{{item.id}}",
+            "responseItemTemplate": "{{item.name}}",
+            "responseListField": "",
+            "uuid": "32b5f11d-960b-4ce9-889f-fc7d29964122"
+          },
+          "dc19efbe-fdda-4f27-a51f-56662f4da808": {
+            "annotations": [],
+            "id": "widgetPortal",
+            "integrationType": "WidgetIntegration",
+            "itemUrl": "https://example.com/widgets/{{item.id}}",
+            "logo": "",
+            "name": "Widget Portal",
+            "props": [
+              "domain",
+              "widgetType"
+            ],
+            "uuid": "dc19efbe-fdda-4f27-a51f-56662f4da808",
+            "widgetUrl": "${baseurl}/widget-portal.json?domain=${domain}&widgetType=${widgetType}&q=${q}"
+          },
+          "e595a99e-5b10-4ac1-a6ef-379c849f9c84": {
+            "annotations": [],
+            "id": "ontologyPortal",
+            "integrationType": "ApiIntegration",
+            "itemUrl": "https://example.com/ontologies/${id}",
+            "logo": "",
+            "name": "Ontology Portal",
+            "props": [
+              "domain",
+              "country"
+            ],
+            "requestBody": "",
+            "requestEmptySearch": true,
+            "requestHeaders": [
+              {
+                "key": "Api-Key",
+                "value": "${apikey}"
+              }
+            ],
+            "requestMethod": "GET",
+            "requestUrl": "${baseurl}/${path}?domain=${domain}&country=${country}&q=${q}",
+            "responseItemId": "{{item.id}}",
+            "responseItemTemplate": "{{item.name}}",
+            "responseListField": "nested.results",
+            "uuid": "e595a99e-5b10-4ac1-a6ef-379c849f9c84"
+          }
+        },
+        "metrics": {
+          "0bafe0c2-a8f2-4c74-80c8-dbf3a5b8e9b7": {
+            "abbreviation": "R",
+            "annotations": [],
+            "description": "The Reusability metric describes how well the data is suitable for reuse in other context. The score associated with an answer will be higher if it makes it easier for humans and computers to reuse the data. This is influenced largely by proper description of how the data was obtained, and also by the conditions that are put on the reuse (license and, for personally identifying information, consent).",
+            "title": "Reusability",
+            "uuid": "0bafe0c2-a8f2-4c74-80c8-dbf3a5b8e9b7"
+          },
+          "0feac7e6-add4-4723-abae-be5ce7864c63": {
+            "abbreviation": "A",
+            "annotations": [],
+            "description": "The Accessibility metric describes how well the access to the database is described and how easy it is to implement. The score associated with an answer will be higher if it makes it easier for humans and computers to get to the data. This is determined by e.g. the protocol for accessing the data or for authenticating users, and also by the guaranteed longevity of the repository. Note that this is different from the Openness metric!",
+            "title": "Accessibility",
+            "uuid": "0feac7e6-add4-4723-abae-be5ce7864c63"
+          },
+          "8845fe2b-79df-4138-baea-3a035bf5e249": {
+            "abbreviation": "G",
+            "annotations": [],
+            "description": "The Good DMP Practice metric describes how appreciated a process is among Data Stewards. A score associated with an answer will be high if a practice would be considered preferable over alternatives, generally a good idea.",
+            "title": "Good DMP Practice",
+            "uuid": "8845fe2b-79df-4138-baea-3a035bf5e249"
+          },
+          "8db30660-d4e5-4c0a-bf3e-553f3f0f997a": {
+            "abbreviation": "F",
+            "annotations": [],
+            "description": "The Findability metric describes how easily data can be located. The score associated with an answer will be higher if it makes it easier for humans or for computers to locate your data set, e.g. if it ends up in an index or has a unique resolvable identifier.",
+            "title": "Findability",
+            "uuid": "8db30660-d4e5-4c0a-bf3e-553f3f0f997a"
+          },
+          "a42bded3-a085-45f8-b384-32b4a77c8385": {
+            "abbreviation": "I",
+            "annotations": [],
+            "description": "The Interoperability metric describes how well the data interoperates with other data. The score associated with an answer will be higher if it makes it easier for humans and computers to couple the data with other data and 'understand' relationships. This is influenced by the use of standard ontologies for different fields and proper descriptions of the relations. It is also influenced by proper standard metadata that is agreed by the community.",
+            "title": "Interoperability",
+            "uuid": "a42bded3-a085-45f8-b384-32b4a77c8385"
+          },
+          "cc02c5a0-9754-4432-a7e0-ce0f3cf7a0a0": {
+            "abbreviation": "O",
+            "annotations": [],
+            "description": "The Openness metric describes how Open the data are available. Note that this is different from the Accessibility metric. A score associated with an answer will be high if the data will be as open as possible, and low if voluntary restrictions apply to access and re-use.",
+            "title": "Openness",
+            "uuid": "cc02c5a0-9754-4432-a7e0-ce0f3cf7a0a0"
+          }
+        },
+        "phases": {
+          "1796fa3c-9f53-475f-89ff-c66a0453c42e": {
+            "annotations": [],
+            "description": null,
+            "title": "Before Submitting the DMP",
+            "uuid": "1796fa3c-9f53-475f-89ff-c66a0453c42e"
+          },
+          "adc9133d-afcd-4616-9aea-db5f475898a2": {
+            "annotations": [],
+            "description": null,
+            "title": "Before Finishing the Project",
+            "uuid": "adc9133d-afcd-4616-9aea-db5f475898a2"
+          },
+          "b101f2d0-2476-452d-aa8d-95a41a02b52c": {
+            "annotations": [],
+            "description": null,
+            "title": "Before Submitting the Proposal",
+            "uuid": "b101f2d0-2476-452d-aa8d-95a41a02b52c"
+          }
+        },
+        "questions": {},
+        "references": {},
+        "tags": {
+          "b2f3c232-018b-4d70-8e90-b5c81e8006f1": {
+            "annotations": [],
+            "color": "#4A90E2",
+            "description": "Questions related to data science",
+            "name": "Data Science",
+            "uuid": "b2f3c232-018b-4d70-8e90-b5c81e8006f1"
+          },
+          "e58abfb7-479d-4e81-95e0-83654e83da1a": {
+            "annotations": [],
+            "color": "#F5A623",
+            "description": "Questions related to bio informatic engineering",
+            "name": "BioInformatic",
+            "uuid": "e58abfb7-479d-4e81-95e0-83654e83da1a"
+          }
+        }
+      },
+      "integrationUuids": [
+        "e595a99e-5b10-4ac1-a6ef-379c849f9c84",
+        "32b5f11d-960b-4ce9-889f-fc7d29964122",
+        "dc19efbe-fdda-4f27-a51f-56662f4da808"
+      ],
+      "metricUuids": [
+        "8db30660-d4e5-4c0a-bf3e-553f3f0f997a",
+        "0feac7e6-add4-4723-abae-be5ce7864c63",
+        "a42bded3-a085-45f8-b384-32b4a77c8385",
+        "0bafe0c2-a8f2-4c74-80c8-dbf3a5b8e9b7",
+        "8845fe2b-79df-4138-baea-3a035bf5e249",
+        "cc02c5a0-9754-4432-a7e0-ce0f3cf7a0a0"
+      ],
+      "phaseUuids": [
+        "b101f2d0-2476-452d-aa8d-95a41a02b52c",
+        "1796fa3c-9f53-475f-89ff-c66a0453c42e",
+        "adc9133d-afcd-4616-9aea-db5f475898a2"
+      ],
+      "tagUuids": [
+        "b2f3c232-018b-4d70-8e90-b5c81e8006f1",
+        "e58abfb7-479d-4e81-95e0-83654e83da1a"
+      ],
+      "uuid": "ff672529-e837-4201-b7b1-7ada557d9725"
+    },
+    "labels": {},
+    "migrationUuid": null,
+    "name": "Outdated Questionnaire",
+    "package": {
+      "createdAt": "2018-01-21T00:00:00Z",
+      "description": "Second Release",
+      "id": "org.nl:core-nl:2.0.0",
+      "kmId": "core-nl",
+      "name": "Netherlands Knowledge Model",
+      "organization": null,
+      "organizationId": "org.nl",
+      "phase": "ReleasedPackagePhase",
+      "remoteLatestVersion": null,
+      "state": "UnknownPackageState",
+      "version": "2.0.0"
+    },
+    "permissions": [],
+    "phaseUuid": "1796fa3c-9f53-475f-89ff-c66a0453c42e",
+    "projectTags": [],
+    "replies": {},
+    "selectedQuestionTagUuids": [],
+    "sharing": "RestrictedQuestionnaire",
+    "state": "Migrating",
+    "updatedAt": "2018-01-25T00:00:00Z",
+    "uuid": "5deabef8-f526-421c-90e2-dd7aed1a25c5",
+    "versions": [],
+    "visibility": "PrivateQuestionnaire"
+  },
+  "oldQuestionnaire": {
+    "commentThreadsMap": {},
+    "createdAt": "2018-01-20T00:00:00Z",
+    "creatorUuid": null,
+    "description": "Some description",
+    "documentTemplate": {
+      "description": "Exported questions and answers from a questionnaire",
+      "formats": [
+        {
+          "icon": "far fa-file",
+          "isPdf": false,
+          "name": "JSON Data",
+          "uuid": "d3e98eb6-344d-481f-8e37-6a67b6cd1ad2"
+        },
+        {
+          "icon": "far fa-file-code",
+          "isPdf": false,
+          "name": "HTML Document",
+          "uuid": "a9293d08-59a4-4e6b-ae62-7a6a570b031c"
+        },
+        {
+          "icon": "far fa-file-pdf",
+          "isPdf": true,
+          "name": "PDF Document",
+          "uuid": "68c26e34-5e77-4e15-9bf7-06ff92582257"
+        },
+        {
+          "icon": "far fa-file-alt",
+          "isPdf": false,
+          "name": "LaTeX Document",
+          "uuid": "dbc94579-40d7-42c3-975c-71e30d07778b"
+        },
+        {
+          "icon": "far fa-file-word",
+          "isPdf": false,
+          "name": "MS Word Document",
+          "uuid": "f4bd941a-dfbe-4226-a1fc-200fb5269311"
+        },
+        {
+          "icon": "far fa-file-alt",
+          "isPdf": false,
+          "name": "OpenDocument Text",
+          "uuid": "15e53172-bbae-4a0c-a4d9-8f3ddf60e7b6"
+        },
+        {
+          "icon": "far fa-file-alt",
+          "isPdf": false,
+          "name": "Markdown Document",
+          "uuid": "f0533e48-f4c5-4af2-b2c1-5a47d4a247c0"
+        }
+      ],
+      "id": "global:questionnaire-report:1.0.0",
+      "name": "Questionnaire Report",
+      "phase": "ReleasedDocumentTemplatePhase",
+      "version": "1.0.0"
+    },
+    "documentTemplateId": "global:questionnaire-report:1.0.0",
+    "documentTemplatePhase": "ReleasedDocumentTemplatePhase",
+    "documentTemplateState": "UnknownDocumentTemplateState",
+    "format": {
+      "icon": "far fa-file",
+      "isPdf": false,
+      "name": "JSON Data",
+      "uuid": "d3e98eb6-344d-481f-8e37-6a67b6cd1ad2"
+    },
+    "formatUuid": "d3e98eb6-344d-481f-8e37-6a67b6cd1ad2",
+    "isTemplate": false,
+    "knowledgeModel": {
+      "annotations": [],
+      "chapterUuids": [
+        "00000000-0000-0000-0000-0000000000c1"
+      ],
+      "entities": {
+        "answers": {},
+        "chapters": {
+          "00000000-0000-0000-0000-0000000000c1": {
+            "annotations": [],
+            "questionUuids": [],
+            "text": "Before you decide to embark on any new study, it is nowadays good practice to consider all options to keep the data generation part of your study as limited as possible. It is not because we can generate massive amounts of data that we always need to do so. Creating data with public money is bringing with it the responsibility to treat those data well and (if potentially useful) make them available for re-use by others.",
+            "title": "Design of experiment",
+            "uuid": "00000000-0000-0000-0000-0000000000c1"
+          }
+        },
+        "choices": {},
+        "experts": {},
+        "integrations": {
+          "32b5f11d-960b-4ce9-889f-fc7d29964122": {
+            "annotations": [],
+            "id": "bioPortal",
+            "integrationType": "ApiIntegration",
+            "itemUrl": "https://example.com/portals/{{item.id}}",
+            "logo": "",
+            "name": "Bio Portal",
+            "props": [
+              "domain",
+              "branch"
+            ],
+            "requestBody": "",
+            "requestEmptySearch": false,
+            "requestHeaders": [
+              {
+                "key": "Api-Key",
+                "value": "${apikey}"
+              }
+            ],
+            "requestMethod": "GET",
+            "requestUrl": "${baseurl}/${path}?domain=${domain}&branch=${branch}&q=${q}",
+            "responseItemId": "{{item.id}}",
+            "responseItemTemplate": "{{item.name}}",
+            "responseListField": "",
+            "uuid": "32b5f11d-960b-4ce9-889f-fc7d29964122"
+          },
+          "dc19efbe-fdda-4f27-a51f-56662f4da808": {
+            "annotations": [],
+            "id": "widgetPortal",
+            "integrationType": "WidgetIntegration",
+            "itemUrl": "https://example.com/widgets/{{item.id}}",
+            "logo": "",
+            "name": "Widget Portal",
+            "props": [
+              "domain",
+              "widgetType"
+            ],
+            "uuid": "dc19efbe-fdda-4f27-a51f-56662f4da808",
+            "widgetUrl": "${baseurl}/widget-portal.json?domain=${domain}&widgetType=${widgetType}&q=${q}"
+          },
+          "e595a99e-5b10-4ac1-a6ef-379c849f9c84": {
+            "annotations": [],
+            "id": "ontologyPortal",
+            "integrationType": "ApiIntegration",
+            "itemUrl": "https://example.com/ontologies/${id}",
+            "logo": "",
+            "name": "Ontology Portal",
+            "props": [
+              "domain",
+              "country"
+            ],
+            "requestBody": "",
+            "requestEmptySearch": true,
+            "requestHeaders": [
+              {
+                "key": "Api-Key",
+                "value": "${apikey}"
+              }
+            ],
+            "requestMethod": "GET",
+            "requestUrl": "${baseurl}/${path}?domain=${domain}&country=${country}&q=${q}",
+            "responseItemId": "{{item.id}}",
+            "responseItemTemplate": "{{item.name}}",
+            "responseListField": "nested.results",
+            "uuid": "e595a99e-5b10-4ac1-a6ef-379c849f9c84"
+          }
+        },
+        "metrics": {
+          "0bafe0c2-a8f2-4c74-80c8-dbf3a5b8e9b7": {
+            "abbreviation": "R",
+            "annotations": [],
+            "description": "The Reusability metric describes how well the data is suitable for reuse in other context. The score associated with an answer will be higher if it makes it easier for humans and computers to reuse the data. This is influenced largely by proper description of how the data was obtained, and also by the conditions that are put on the reuse (license and, for personally identifying information, consent).",
+            "title": "Reusability",
+            "uuid": "0bafe0c2-a8f2-4c74-80c8-dbf3a5b8e9b7"
+          },
+          "0feac7e6-add4-4723-abae-be5ce7864c63": {
+            "abbreviation": "A",
+            "annotations": [],
+            "description": "The Accessibility metric describes how well the access to the database is described and how easy it is to implement. The score associated with an answer will be higher if it makes it easier for humans and computers to get to the data. This is determined by e.g. the protocol for accessing the data or for authenticating users, and also by the guaranteed longevity of the repository. Note that this is different from the Openness metric!",
+            "title": "Accessibility",
+            "uuid": "0feac7e6-add4-4723-abae-be5ce7864c63"
+          },
+          "8845fe2b-79df-4138-baea-3a035bf5e249": {
+            "abbreviation": "G",
+            "annotations": [],
+            "description": "The Good DMP Practice metric describes how appreciated a process is among Data Stewards. A score associated with an answer will be high if a practice would be considered preferable over alternatives, generally a good idea.",
+            "title": "Good DMP Practice",
+            "uuid": "8845fe2b-79df-4138-baea-3a035bf5e249"
+          },
+          "8db30660-d4e5-4c0a-bf3e-553f3f0f997a": {
+            "abbreviation": "F",
+            "annotations": [],
+            "description": "The Findability metric describes how easily data can be located. The score associated with an answer will be higher if it makes it easier for humans or for computers to locate your data set, e.g. if it ends up in an index or has a unique resolvable identifier.",
+            "title": "Findability",
+            "uuid": "8db30660-d4e5-4c0a-bf3e-553f3f0f997a"
+          },
+          "a42bded3-a085-45f8-b384-32b4a77c8385": {
+            "abbreviation": "I",
+            "annotations": [],
+            "description": "The Interoperability metric describes how well the data interoperates with other data. The score associated with an answer will be higher if it makes it easier for humans and computers to couple the data with other data and 'understand' relationships. This is influenced by the use of standard ontologies for different fields and proper descriptions of the relations. It is also influenced by proper standard metadata that is agreed by the community.",
+            "title": "Interoperability",
+            "uuid": "a42bded3-a085-45f8-b384-32b4a77c8385"
+          },
+          "cc02c5a0-9754-4432-a7e0-ce0f3cf7a0a0": {
+            "abbreviation": "O",
+            "annotations": [],
+            "description": "The Openness metric describes how Open the data are available. Note that this is different from the Accessibility metric. A score associated with an answer will be high if the data will be as open as possible, and low if voluntary restrictions apply to access and re-use.",
+            "title": "Openness",
+            "uuid": "cc02c5a0-9754-4432-a7e0-ce0f3cf7a0a0"
+          }
+        },
+        "phases": {
+          "1796fa3c-9f53-475f-89ff-c66a0453c42e": {
+            "annotations": [],
+            "description": null,
+            "title": "Before Submitting the DMP",
+            "uuid": "1796fa3c-9f53-475f-89ff-c66a0453c42e"
+          },
+          "adc9133d-afcd-4616-9aea-db5f475898a2": {
+            "annotations": [],
+            "description": null,
+            "title": "Before Finishing the Project",
+            "uuid": "adc9133d-afcd-4616-9aea-db5f475898a2"
+          },
+          "b101f2d0-2476-452d-aa8d-95a41a02b52c": {
+            "annotations": [],
+            "description": null,
+            "title": "Before Submitting the Proposal",
+            "uuid": "b101f2d0-2476-452d-aa8d-95a41a02b52c"
+          }
+        },
+        "questions": {},
+        "references": {},
+        "tags": {
+          "b2f3c232-018b-4d70-8e90-b5c81e8006f1": {
+            "annotations": [],
+            "color": "#4A90E2",
+            "description": "Questions related to data science",
+            "name": "Data Science",
+            "uuid": "b2f3c232-018b-4d70-8e90-b5c81e8006f1"
+          },
+          "e58abfb7-479d-4e81-95e0-83654e83da1a": {
+            "annotations": [],
+            "color": "#F5A623",
+            "description": "Questions related to bio informatic engineering",
+            "name": "BioInformatic",
+            "uuid": "e58abfb7-479d-4e81-95e0-83654e83da1a"
+          }
+        }
+      },
+      "integrationUuids": [
+        "e595a99e-5b10-4ac1-a6ef-379c849f9c84",
+        "32b5f11d-960b-4ce9-889f-fc7d29964122",
+        "dc19efbe-fdda-4f27-a51f-56662f4da808"
+      ],
+      "metricUuids": [
+        "8db30660-d4e5-4c0a-bf3e-553f3f0f997a",
+        "0feac7e6-add4-4723-abae-be5ce7864c63",
+        "a42bded3-a085-45f8-b384-32b4a77c8385",
+        "0bafe0c2-a8f2-4c74-80c8-dbf3a5b8e9b7",
+        "8845fe2b-79df-4138-baea-3a035bf5e249",
+        "cc02c5a0-9754-4432-a7e0-ce0f3cf7a0a0"
+      ],
+      "phaseUuids": [
+        "b101f2d0-2476-452d-aa8d-95a41a02b52c",
+        "1796fa3c-9f53-475f-89ff-c66a0453c42e",
+        "adc9133d-afcd-4616-9aea-db5f475898a2"
+      ],
+      "tagUuids": [
+        "b2f3c232-018b-4d70-8e90-b5c81e8006f1",
+        "e58abfb7-479d-4e81-95e0-83654e83da1a"
+      ],
+      "uuid": "ff672529-e837-4201-b7b1-7ada557d9725"
+    },
+    "labels": {},
+    "migrationUuid": "5deabef8-f526-421c-90e2-dd7aed1a25c5",
+    "name": "Outdated Questionnaire",
+    "package": {
+      "createdAt": "2018-01-21T00:00:00Z",
+      "description": "First Release",
+      "id": "org.nl:core-nl:1.0.0",
+      "kmId": "core-nl",
+      "name": "Netherlands Knowledge Model",
+      "organization": null,
+      "organizationId": "org.nl",
+      "phase": "ReleasedPackagePhase",
+      "remoteLatestVersion": null,
+      "state": "UnknownPackageState",
+      "version": "1.0.0"
+    },
+    "permissions": [],
+    "phaseUuid": "1796fa3c-9f53-475f-89ff-c66a0453c42e",
+    "projectTags": [],
+    "replies": {},
+    "selectedQuestionTagUuids": [],
+    "sharing": "RestrictedQuestionnaire",
+    "state": "Outdated",
+    "updatedAt": "2018-01-25T00:00:00Z",
+    "uuid": "57250a07-a663-4ff3-ac1f-16530f2c1bfe",
+    "versions": [],
+    "visibility": "PrivateQuestionnaire"
+  },
+  "resolvedQuestionUuids": [
+    "00000000-0000-0000-0000-0000000000f2"
+  ]
+}

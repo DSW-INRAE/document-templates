@@ -1,0 +1,12 @@
+{%- extends "src/csv/abstract-template.csv.jinja2" -%}
+{%- block body -%}
+    {#- Body of the script -#}
+    {%- for chapterUuid in km.chapterUuids -%}
+        {%- if loop.index == 3 -%}
+            {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
+                {%- set question = km.entities.questions[questionUuid] -%}
+                {{- markProjetRechercheValuesAndTags([chapterUuid, questionUuid], question) -}}
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock -%}
