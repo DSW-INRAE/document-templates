@@ -2,7 +2,7 @@
 
 {#- Cette fonction permet de traverser récursivement les question -#}
 
-{%- macro markQuestions(replyPathUuids, question, questionString) -%}
+{%- macro printQuestionTag(replyPathUuids, question, questionString) -%}
 
     {%- if question.questionType == "ListQuestion" -%}
 
@@ -16,7 +16,7 @@
                 {{- replyPathUuids.append(questionUuid) or "" -}}
                 {{- replyPathUuids.append(subQuestionUuid) or "" -}}
 
-                {{- markQuestions(replyPathUuids, subQuestion, questionString + "_" + k.value | of_alphabet + "_" + i.value | string) -}}
+                {{- printQuestionTag(replyPathUuids, subQuestion, questionString + "_" + k.value | of_alphabet + "_" + i.value | string) -}}
 
                 {{- replyPathUuids.remove(questionUuid) or "" -}}
                 {{- replyPathUuids.remove(subQuestionUuid) or "" -}}
@@ -47,7 +47,7 @@
             {{- replyPathUuids.append(answerUuid) or "" -}}
             {{- replyPathUuids.append(followUpUuid) or "" -}}
 
-            {{- markQuestions(replyPathUuids, subQuestion, questionString + "_" + questionIndex.value | of_alphabet + "_" + i.value | string) -}}
+            {{- printQuestionTag(replyPathUuids, subQuestion, questionString + "_" + questionIndex.value | of_alphabet + "_" + i.value | string) -}}
 
             {{- replyPathUuids.remove(answerUuid) or "" -}}
             {{- replyPathUuids.remove(followUpUuid) or "" -}}
@@ -59,7 +59,7 @@
     {%- endif -%}
 {%- endmacro %}
 
-{%- macro valuesOfQuestions(replyPathUuids, question) -%}
+{%- macro printQuestionValue(replyPathUuids, question) -%}
     {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
 
     {%- if question.questionType == "ListQuestion" -%}
@@ -69,7 +69,7 @@
                 {{- replyPathUuids.append(questionUuid) or "" -}}
                 {{- replyPathUuids.append(subQuestionUuid) or "" -}}
 
-                {{- valuesOfQuestions(replyPathUuids, subQuestion) -}}
+                {{- printQuestionValue(replyPathUuids, subQuestion) -}}
 
                 {{- replyPathUuids.remove(questionUuid) or "" -}}
                 {{- replyPathUuids.remove(subQuestionUuid) or "" -}}
@@ -86,7 +86,7 @@
             {{- replyPathUuids.append(answerUuid) or "" -}}
             {{- replyPathUuids.append(followUpUuid) or "" -}}
 
-            {{- valuesOfQuestions(replyPathUuids, subQuestion) -}}
+            {{- printQuestionValue(replyPathUuids, subQuestion) -}}
 
             {{- replyPathUuids.remove(answerUuid) or "" -}}
             {{- replyPathUuids.remove(followUpUuid) or "" -}}
@@ -106,7 +106,7 @@
     {% set j = namespace(value = 1) %}
     {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
         {%- set question = km.entities.questions[questionUuid] -%}
-        {{- markQuestions([chapterUuid, questionUuid], question, "q" + i.value | string + "_" + j.value | string) -}}
+        {{- printQuestionTag([chapterUuid, questionUuid], question, "q" + i.value | string + "_" + j.value | string) -}}
         {%- set j.value = j.value + 1 -%}
     {%- endfor -%}
     {%- set i.value = i.value + 1 -%}
@@ -117,6 +117,6 @@
 {%- for chapterUuid in km.chapterUuids -%}
     {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
         {%- set question = km.entities.questions[questionUuid] -%}
-        {{- valuesOfQuestions([chapterUuid, questionUuid], question) -}}
+        {{- printQuestionValue([chapterUuid, questionUuid], question) -}}
     {%- endfor -%}
 {%- endfor -%}

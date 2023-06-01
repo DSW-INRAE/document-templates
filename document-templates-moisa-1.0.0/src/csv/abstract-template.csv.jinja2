@@ -5,7 +5,7 @@
 {%- set km = ctx.knowledgeModel -%}
 {%- set repliesMap = ctx.questionnaireReplies -%}
 
-{%- macro markQuestions(replyPathUuids, question, questionString) -%}
+{%- macro printQuestionTag(replyPathUuids, question, questionString) -%}
     {%- if (replyPathUuids | reply_path) in repliesMap -%}
         {%- if question.questionType == "ListQuestion" -%}
 
@@ -19,7 +19,7 @@
                     {{- replyPathUuids.append(questionUuid) or "" -}}
                     {{- replyPathUuids.append(subQuestionUuid) or "" -}}
 
-                    {{- markQuestions(replyPathUuids, subQuestion, questionString + "_" + k.value | of_alphabet + "_" + i.value | string) -}}
+                    {{- printQuestionTag(replyPathUuids, subQuestion, questionString + "_" + k.value | of_alphabet + "_" + i.value | string) -}}
 
                     {{- replyPathUuids.remove(questionUuid) or "" -}}
                     {{- replyPathUuids.remove(subQuestionUuid) or "" -}}
@@ -50,7 +50,7 @@
                 {{- replyPathUuids.append(answerUuid) or "" -}}
                 {{- replyPathUuids.append(followUpUuid) or "" -}}
 
-                {{- markQuestions(replyPathUuids, subQuestion, questionString + "_" + questionIndex.value | of_alphabet + "_" + i.value | string) -}}
+                {{- printQuestionTag(replyPathUuids, subQuestion, questionString + "_" + questionIndex.value | of_alphabet + "_" + i.value | string) -}}
 
                 {{- replyPathUuids.remove(answerUuid) or "" -}}
                 {{- replyPathUuids.remove(followUpUuid) or "" -}}
@@ -63,7 +63,7 @@
     {%- endif -%}
 {%- endmacro %}
 
-{%- macro valuesOfQuestions(replyPathUuids, question) -%}
+{%- macro printQuestionValue(replyPathUuids, question) -%}
     {%- if replyPathUuids | reply_path in repliesMap -%}
 
         {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
@@ -74,7 +74,7 @@
                     {{- replyPathUuids.append(questionUuid) or "" -}}
                     {{- replyPathUuids.append(subQuestionUuid) or "" -}}
 
-                    {{- valuesOfQuestions(replyPathUuids, subQuestion) -}}
+                    {{- printQuestionValue(replyPathUuids, subQuestion) -}}
 
                     {{- replyPathUuids.remove(questionUuid) or "" -}}
                     {{- replyPathUuids.remove(subQuestionUuid) or "" -}}
@@ -91,7 +91,7 @@
                 {{- replyPathUuids.append(answerUuid) or "" -}}
                 {{- replyPathUuids.append(followUpUuid) or "" -}}
 
-                {{- valuesOfQuestions(replyPathUuids, subQuestion) -}}
+                {{- printQuestionValue(replyPathUuids, subQuestion) -}}
 
                 {{- replyPathUuids.remove(answerUuid) or "" -}}
                 {{- replyPathUuids.remove(followUpUuid) or "" -}}
@@ -102,27 +102,25 @@
     {%- endif -%}
 {%- endmacro -%}
 
-{%- macro markProjetRechercheUuid(replyPathUuids) -%}
-    {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
-    {%- for questionUuid in reply.value -%}
-        {{- questionUuid + "\n" -}}
-    {%- endfor -%}
-{%- endmacro -%}
-
-{%- macro markProjetRechercheValuesAndTags(replyPathUuids, question) -%}
+{%- macro printDataSetValuesAndTags(replyPathUuids, question, isExternal) -%}
     {%- if replyPathUuids | reply_path in repliesMap -%}
         {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
         {%- set k = namespace(value = 0) -%}
         {%- for questionUuid in reply.value -%}
             {{- questionUuid + "," -}}
-            {{- markProjetRechercheTags(replyPathUuids, questionUuid, question, "q3_" + k.value | of_alphabet) + ","-}}
+            {%- if isExternal -%}
+               {%- set questionString = "q4_1_" -%}
+            {%- else -%}
+                {%- set questionString = "q3_1_" -%}
+            {%- endif -%}
+            {{- printDataSetTags(replyPathUuids, questionUuid, question, questionString + k.value | of_alphabet) + ","-}}
             {{ "\n," }}
             {%- for subQuestionUuid in question.itemTemplateQuestionUuids -%}
                 {%- set subQuestion = km.entities.questions[subQuestionUuid] -%}
                 {{- replyPathUuids.append(questionUuid) or "" -}}
                 {{- replyPathUuids.append(subQuestionUuid) or "" -}}
 
-                {{- valuesOfQuestions(replyPathUuids, subQuestion) -}}
+                {{- printQuestionValue(replyPathUuids, subQuestion) -}}
 
                 {{- replyPathUuids.remove(questionUuid) or "" -}}
                 {{- replyPathUuids.remove(subQuestionUuid) or "" -}}
@@ -133,8 +131,7 @@
     {%- endif -%}
 {%- endmacro -%}
 
-
-{%- macro markProjetRechercheTags(replyPathUuids, questionUuid, question, questionString) -%}
+{%- macro printDataSetTags(replyPathUuids, questionUuid, question, questionString) -%}
     {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
 
     {%- set i = namespace(value = 1) -%}
@@ -143,7 +140,7 @@
         {{- replyPathUuids.append(questionUuid) or "" -}}
         {{- replyPathUuids.append(subQuestionUuid) or "" -}}
 
-        {{- markQuestions(replyPathUuids, subQuestion, questionString + "_" + i.value | string) -}}
+        {{- printQuestionTag(replyPathUuids, subQuestion, questionString + "_" + i.value | string) -}}
 
         {{- replyPathUuids.remove(questionUuid) or "" -}}
         {{- replyPathUuids.remove(subQuestionUuid) or "" -}}

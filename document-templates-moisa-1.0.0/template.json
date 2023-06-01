@@ -152,7 +152,7 @@
                 {
                     "name": "jinja",
                     "options": {
-                        "template": "src/csv/jeux-donnees-externes.csv.jinja2",
+                        "template": "src/csv/jeu-donnees-externes.csv.jinja2",
                         "content-type": "text/csv",
                         "extension": "csv"
                     }

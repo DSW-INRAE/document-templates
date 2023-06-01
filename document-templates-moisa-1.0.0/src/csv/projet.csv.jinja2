@@ -1,5 +1,28 @@
 {%- extends "src/csv/abstract-template.csv.jinja2" -%}
 {%- block body -%}
+    {#- Functions -#}
+    {%- macro printDataSetUuid(replyPathUuids) -%}
+        {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
+        {%- for questionUuid in reply.value -%}
+            {{- questionUuid + "," -}}
+        {%- endfor -%}
+    {%- endmacro -%}
+
+    {%- macro printExternalDataSetUuid(replyPathUuids) -%}
+        {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
+        {%- set answerUuid = reply.value -%}
+        {%- for followUpUuid in km.entities.answers[answerUuid].followUpUuids -%}
+            {{- replyPathUuids.append(answerUuid) or "" -}}
+            {{- replyPathUuids.append(followUpUuid) or "" -}}
+
+            {{- printDataSetUuid(replyPathUuids) -}}
+
+            {{- replyPathUuids.remove(answerUuid) or "" -}}
+            {{- replyPathUuids.remove(followUpUuid) or "" -}}
+        {%- else -%}
+        {%- endfor -%}
+    {%- endmacro -%}
+
     {#- Body of the script -#}
     {%- set i = namespace(value = 1) -%}
     {%- for chapterUuid in km.chapterUuids -%}
@@ -7,7 +30,7 @@
             {% set j = namespace(value = 1) %}
             {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
                 {%- set question = km.entities.questions[questionUuid] -%}
-                {{- markQuestions([chapterUuid, questionUuid], question, "q" + i.value | string + "_" + j.value | string) -}}
+                {{- printQuestionTag([chapterUuid, questionUuid], question, "q" + i.value | string + "_" + j.value | string) -}}
                 {%- set j.value = j.value + 1 -%}
             {%- endfor -%}
             {%- set i.value = i.value + 1 -%}
@@ -20,16 +43,24 @@
         {%- if loop.index < 3 -%}
             {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
                 {%- set question = km.entities.questions[questionUuid] -%}
-                {{- valuesOfQuestions([chapterUuid, questionUuid], question) -}}
+                {{- printQuestionValue([chapterUuid, questionUuid], question) -}}
             {%- endfor -%}
         {%- else -%}
             {%- if loop.index == 3 -%}
                 {{- ",,\n" -}}
                 {{- ",,\n" -}}
-                {{- "projet_recherche_uuid" -}}
-                {{- "\n" -}}
+                {{- "projet_recherche_uuid," -}}
                 {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
-                    {{- markProjetRechercheUuid([chapterUuid, questionUuid]) -}}
+                    {{- printDataSetUuid([chapterUuid, questionUuid]) -}}
+                {%- else -%}
+                {%- endfor -%}
+            {%- endif -%}
+            {%- if loop.index == 4 -%}
+                {{- ",\n" -}}
+                {{- "jeu_donnees_externes_uuid," -}}
+                {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
+                    {{- printExternalDataSetUuid([chapterUuid, questionUuid]) -}}
+                {%- else -%}
                 {%- endfor -%}
             {%- endif -%}
         {%- endif -%}

@@ -5,7 +5,7 @@
         {%- if loop.index == 3 -%}
             {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
                 {%- set question = km.entities.questions[questionUuid] -%}
-                {{- markProjetRechercheValuesAndTags([chapterUuid, questionUuid], question) -}}
+                {{- printDataSetValuesAndTags([chapterUuid, questionUuid], question, False) -}}
             {%- endfor -%}
         {%- endif -%}
     {%- endfor -%}

@@ -1,0 +1,25 @@
+{%- extends "src/csv/abstract-template.csv.jinja2" -%}
+{%- block body -%}
+    {#- Body of the script -#}
+    {%- for chapterUuid in km.chapterUuids -%}
+        {%- if loop.index == 4 -%}
+            {%- for questionUuid in km.entities.chapters[chapterUuid].questionUuids -%}
+                {%- set replyPathUuids = [chapterUuid, questionUuid] -%}
+                {%- if replyPathUuids | reply_path in repliesMap -%}
+                    {%- set reply = repliesMap[replyPathUuids | reply_path].value -%}
+                    {%- set answerUuid = reply.value -%}
+                    {%- for followUpUuid in km.entities.answers[answerUuid].followUpUuids -%}
+                        {%- set subQuestion = km.entities.questions[followUpUuid] -%}
+                        {{- replyPathUuids.append(answerUuid) or "" -}}
+                        {{- replyPathUuids.append(followUpUuid) or "" -}}
+
+                        {{- printDataSetValuesAndTags(replyPathUuids, subQuestion, True) -}}
+
+                        {{- replyPathUuids.remove(answerUuid) or "" -}}
+                        {{- replyPathUuids.remove(followUpUuid) or "" -}}
+                    {%- endfor -%}
+                {%- endif -%}
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock -%}
