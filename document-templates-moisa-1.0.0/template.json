@@ -5,7 +5,7 @@
     "name": "Document Templates MoISA",
     "description": "",
     "license": "CC0",
-    "metamodelVersion": 11,
+    "metamodelVersion": 13,
     "recommendedPackageId": null,
     "allowedPackages": [
         {
