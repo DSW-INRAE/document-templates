@@ -16,3 +16,7 @@ Ce script va, dans cet ordre :
  - demander la publication du template
  - exporter le projet selon le template fraîchement créé
    (et sauvegarde l'identifiant du document dans [lastDocument](scripts/lastDocument))
+
+Nécessite un accès administrateur.
+
+Veillez à bien préciser les paramètres au début du script.
