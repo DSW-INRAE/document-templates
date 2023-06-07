@@ -1,9 +1,9 @@
 {
-    "templateId": "document-templates-moisa",
+    "templateId": "document-templates-moisa-cirad",
     "organizationId": "myorg",
     "version": "1.0.0",
-    "name": "Document Templates MoISA",
-    "description": "",
+    "name": "Document Templates MoISA - Cirad",
+    "description": "Template d'export compatible au Knowledge-Model Moisa-Cirad",
     "license": "CC0",
     "metamodelVersion": 11,
     "recommendedPackageId": null,
