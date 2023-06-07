@@ -17,6 +17,15 @@ Ce script va, dans cet ordre :
  - exporter le projet selon le template fraîchement créé
    (et sauvegarde l'identifiant du document dans [lastDocument](scripts/lastDocument))
 
-Nécessite un accès administrateur.
+Nécessite un accès administrateur à l'instance DSW, et le
+package [dsw-tdk](https://pypi.org/project/dsw-tdk/3.24.0/).
+
+Veillez à bien préciser les paramètres au début du script.
+
+### [`pack.sh`](scripts/pack.sh)
+
+Empaquette le template vers une archive importable.
+
+Nécessite le package [dsw-tdk](https://pypi.org/project/dsw-tdk/3.24.0/).
 
 Veillez à bien préciser les paramètres au début du script.

@@ -1,10 +1,17 @@
+#!/bin/bash
+
 #définition des paramètres (à changer selon le template à envoyer)
 DSW_API=http://localhost:3000
 DSW_USERNAME=albert.einstein@example.com
 DSW_PASSWORD=password
-TEMPLATE_PATH="../document-templates/document-templates-moisa-cirad"
+TEMPLATE_PATH="../document-templates/document-template-moisa-cirad"
 PROJECT_UUUID=9427eec4-821a-4fbc-8ef5-f0248d9010b1
 FORMAT_UUUID=2e3cd342-fcab-41ac-b155-6487e8ddb12b # l'id du format à tester (HTML, CSV, DOCX...), il se trouve dans template.json
+
+if ! command -v dsw-tdk &>/dev/null; then
+    echo "Installez dsw-tdk (pip install dsw-tdk)"
+    exit 1
+fi
 
 #récupération du token d'identification
 URL_TOKEN=$DSW_API/tokens
