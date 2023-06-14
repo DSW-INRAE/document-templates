@@ -1,3 +1,5 @@
-/document-templates-moisa-1.0.0/resources
-/document-templates-moisa-1.0.0/lastDocument
+/document-templates/document-template-moisa-cirad/resources
+/document-templates/document-template-moisa-cirad/lastDocument
 /.idea
+/scripts/lastDocument
+*.zip
