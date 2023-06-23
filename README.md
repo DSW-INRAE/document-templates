@@ -1,4 +1,4 @@
-# dsw-inrae-deployment
+# document-templates
 
 L'entièreté des [templates DSW](https://guide.ds-wizard.org/en/latest/application/document-templates/index.html)
 réalisés pour le déploiement de l'application au sein d'INRAE.
