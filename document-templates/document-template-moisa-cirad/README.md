@@ -32,6 +32,11 @@ de soumission
 - Ajout du format **DOCX-en** (identique à la version française pour le moment)
 - Compatibilité avec le knowledge-model le plus récent
 
+### 1.0.3
+
+- Annexe 1 : dorénavant, toute les natures sont affichées, et celles concernées par le jeu de données seront soulignées.
+- La périodicité est affichée même si elle est égale à 1.
+
 ## License
 
 This template is released under CC0. Read the LICENSE file for details.
