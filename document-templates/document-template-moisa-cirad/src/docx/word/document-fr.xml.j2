@@ -1050,12 +1050,10 @@
                             <w:pPr>
                                 <w:pStyle w:val="Contenudetableau"/>
                                 <w:widowControl w:val="false"/>
-                                {% if projet.partenaires|length > 1 %}
                                     <w:numPr>
                                         <w:ilvl w:val="0"/>
-                                        <w:numId w:val="8"/>
+                                        <w:numId w:val="4"/>
                                     </w:numPr>
-                                {% endif %}
                                 <w:rPr></w:rPr>
                             </w:pPr>
                             <w:r>
@@ -2028,7 +2026,7 @@
                                 <w:t>Du {{ JDD.dateDebut }} au {{ JDD.dateFin }}</w:t>
                             </w:r>
                         </w:p>
-                            <w:p>
+                        <w:p>
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
@@ -2132,12 +2130,10 @@
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
-                                    {% if JDD.responsablesDonnees | length > 1 %}
                                         <w:numPr>
                                             <w:ilvl w:val="0"/>
-                                            <w:numId w:val="8"/>
+                                            <w:numId w:val="4"/>
                                         </w:numPr>
-                                    {% endif %}
                                     <w:rPr></w:rPr>
                                 </w:pPr>
                                 <w:r>
@@ -2191,12 +2187,10 @@
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
-                                    {% if JDD.responsablesCollecte | length > 1 %}
                                         <w:numPr>
                                             <w:ilvl w:val="0"/>
-                                            <w:numId w:val="8"/>
+                                            <w:numId w:val="4"/>
                                         </w:numPr>
-                                    {% endif %}
                                     <w:rPr></w:rPr>
                                 </w:pPr>
                                 <w:r>
@@ -2247,12 +2241,10 @@
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
-                                    {% if JDD.responsablesAnalyse | length > 1 %}
                                         <w:numPr>
                                             <w:ilvl w:val="0"/>
-                                            <w:numId w:val="8"/>
+                                            <w:numId w:val="4"/>
                                         </w:numPr>
-                                    {% endif %}
                                     <w:rPr></w:rPr>
                                 </w:pPr>
                                 <w:r>
@@ -2316,7 +2308,7 @@
                                     <w:color w:val="222222"/>
                                     <w:spacing w:val="0"/>
                                 </w:rPr>
-                                <w:t>{{ checkBox(JDD.responsabiliteConjointe) }}</w:t>
+                                <w:t>{{ checkBox(JDD.institutionsDifferentes) }}</w:t>
                             </w:r>
                             <w:r>
                                 <w:rPr>
@@ -2356,7 +2348,7 @@
                                     <w:color w:val="222222"/>
                                     <w:spacing w:val="0"/>
                                 </w:rPr>
-                                <w:t xml:space="preserve">{% if JDD.institutionsDifferentes %}{{ checkBox(not JDD.responsabiliteConjointe) }}{% else %}☐{% endif %} </w:t>
+                                <w:t xml:space="preserve">{{ checkBox(not JDD.institutionsDifferentes) }}</w:t>
                             </w:r>
                             <w:r>
                                 <w:rPr>
@@ -5873,7 +5865,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>Aucun des critères si dessus</w:t>
+                            <w:t>Aucun des critères ci-dessus</w:t>
                         </w:r>
                     </w:p>
                 </w:tc>
@@ -6465,6 +6457,7 @@
                 </w:tc>
             </w:tr>
             {% for nature in JDD.natures %}
+                {% if nature.concernee %}
                 <w:tr>
                 <w:trPr></w:trPr>
                 <w:tc>
@@ -6513,11 +6506,7 @@
                             <w:rPr></w:rPr>
                         </w:pPr>
                         <w:r>
-                            <w:rPr>
-                                {% if nature.precisionNature != "" %}
-                                    <w:u w:val="single"/>
-                                {% endif %}
-                            </w:rPr>
+                            <w:rPr></w:rPr>
                             <w:t>{{ nature.texte }}</w:t>
                         </w:r>
                     </w:p>
@@ -6662,6 +6651,7 @@
                     </w:p>
                 </w:tc>
             </w:tr>
+                {% endif %}
             {% endfor %}
 
         </w:tbl> {# annexe 1 #}
