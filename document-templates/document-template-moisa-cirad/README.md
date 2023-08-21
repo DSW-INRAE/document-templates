@@ -25,6 +25,25 @@ de soumission
 
 - Documentation, renommages.
 
+### 1.0.2
+
+- Correction d'un problème rendant les documents word illisibles si certains charactères apparaissaient dans le formulaire
+- Renommage du format **DOCX** en **DOCX-fr**
+- Ajout du format **DOCX-en** (identique à la version française pour le moment)
+- Compatibilité avec le knowledge-model le plus récent
+
+### 1.0.3
+
+- Annexe 1 : dorénavant, toute les natures sont affichées, et celles concernées par le jeu de données seront soulignées.
+- La périodicité est affichée même si elle est égale à 1.
+
+### 1.0.4
+
+- Correction orthographique : *ci-dessus*
+- Résolution du problème menant aux listes à puces à apparaître comme des listes ordonnées sur Microsoft Word
+- Annexe 1 : seules les natures concernées sont affichées, les natures dont le détail n'est pas donné apparaissent tout de même
+- Compatibilité avec les modifications concernant la question III.1.x.13 appliquées à la version 2.0.25 du KM
+
 ## License
 
 This template is released under CC0. Read the LICENSE file for details.

@@ -9,16 +9,22 @@
     "recommendedPackageId": null,
     "allowedPackages": [
         {
-            "orgId": null,
-            "kmId": null,
-            "minVersion": null,
+            "orgId": "myorg",
+            "kmId": "pgd",
+            "minVersion": "2.0.0",
+            "maxVersion": null
+        },
+        {
+            "orgId": "00001",
+            "kmId": "pgd",
+            "minVersion": "2.0.0",
             "maxVersion": null
         }
     ],
     "formats": [
         {
             "uuid": "f3a904e4-9468-4605-99ca-a86155ce8f69",
-            "name": "DOCX",
+            "name": "DOCX-fr",
             "shortName": "docx",
             "icon": "fas fa-file",
             "color": "#f15722",
@@ -47,11 +53,52 @@
                         "rewrite:word/_rels/header1.xml.rels": "static:src/docx/word/_rels/header1.xml.rels",
                         "rewrite:word/_rels/header2.xml.rels": "static:src/docx/word/_rels/header2.xml.rels",
 
-                        "rewrite:word/document.xml": "render:src/docx/word/document.xml.j2",
+                        "rewrite:word/document.xml": "render:src/docx/word/document-fr.xml.j2",
                         "rewrite:word/footer1.xml": "static:src/docx/word/footer1.xml",
                         "rewrite:word/footer2.xml": "static:src/docx/word/footer2.xml",
                         "rewrite:word/header1.xml": "static:src/docx/word/header1.xml",
-                        "rewrite:word/header2.xml": "render:src/docx/word/header2.xml.j2"
+                        "rewrite:word/header2.xml": "render:src/docx/word/header2-fr.xml.j2"
+
+                    }
+                }
+            ]
+        },
+        {
+            "uuid": "c45a26d1-485f-4bdd-bd1f-536a102c7294",
+            "name": "DOCX-en",
+            "shortName": "docx",
+            "icon": "fas fa-file",
+            "color": "#f15722",
+            "steps": [
+                {
+                    "name": "jinja",
+                    "options": {
+                        "template": "src/docx/template/template.html.j2",
+                        "content-type": "text/html",
+                        "extension": "html"
+                    }
+                },
+                {
+                    "name": "pandoc",
+                    "options":{
+                        "from": "html",
+                        "to": "docx",
+                        "args": "--reference-doc=src/docx/template/reference.docx"
+                    }
+                },
+                {
+                    "name": "enrich-docx",
+                    "options": {
+                        "rewrite:word/_rels/document.xml.rels": "static:src/docx/word/_rels/document.xml.rels",
+                        "rewrite:word/_rels/footer1.xml.rels": "static:src/docx/word/_rels/footer1.xml.rels",
+                        "rewrite:word/_rels/header1.xml.rels": "static:src/docx/word/_rels/header1.xml.rels",
+                        "rewrite:word/_rels/header2.xml.rels": "static:src/docx/word/_rels/header2.xml.rels",
+
+                        "rewrite:word/document.xml": "render:src/docx/word/document-en.xml.j2",
+                        "rewrite:word/footer1.xml": "static:src/docx/word/footer1.xml",
+                        "rewrite:word/footer2.xml": "static:src/docx/word/footer2.xml",
+                        "rewrite:word/header1.xml": "static:src/docx/word/header1.xml",
+                        "rewrite:word/header2.xml": "render:src/docx/word/header2-en.xml.j2"
 
                     }
                 }

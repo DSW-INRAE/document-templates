@@ -4,6 +4,7 @@
 
 {% from 'src/docx/template/data.j2' import data with context %}
 
+{# Je sépare les données #}
 {% set pgd = data.pgd %}
 {% set projet = data.projet %}
 {% set JDDs = data.JDDs %}
@@ -1049,12 +1050,10 @@
                             <w:pPr>
                                 <w:pStyle w:val="Contenudetableau"/>
                                 <w:widowControl w:val="false"/>
-                                {% if projet.partenaires|length > 1 %}
                                     <w:numPr>
                                         <w:ilvl w:val="0"/>
-                                        <w:numId w:val="8"/>
+                                        <w:numId w:val="4"/>
                                     </w:numPr>
-                                {% endif %}
                                 <w:rPr></w:rPr>
                             </w:pPr>
                             <w:r>
@@ -2027,8 +2026,7 @@
                                 <w:t>Du {{ JDD.dateDebut }} au {{ JDD.dateFin }}</w:t>
                             </w:r>
                         </w:p>
-                        {%- if JDD.periodicite -%}
-                            <w:p>
+                        <w:p>
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
@@ -2040,10 +2038,9 @@
                                 </w:pPr>
                                 <w:r>
                                     <w:rPr></w:rPr>
-                                    <w:t>Périodicité : {{ JDD.precisionsPeriodicite }}</w:t>
+                                    <w:t>Périodicité : {%- if not JDD.periodicite -%}1{% else %}{{ JDD.precisionsPeriodicite }}{%- endif -%}</w:t>
                                 </w:r>
                             </w:p>
-                        {%- endif -%}
                     </w:tc>
                 </w:tr>
                 <w:tr>
@@ -2133,12 +2130,10 @@
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
-                                    {% if JDD.responsablesDonnees | length > 1 %}
                                         <w:numPr>
                                             <w:ilvl w:val="0"/>
-                                            <w:numId w:val="8"/>
+                                            <w:numId w:val="4"/>
                                         </w:numPr>
-                                    {% endif %}
                                     <w:rPr></w:rPr>
                                 </w:pPr>
                                 <w:r>
@@ -2192,12 +2187,10 @@
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
-                                    {% if JDD.responsablesCollecte | length > 1 %}
                                         <w:numPr>
                                             <w:ilvl w:val="0"/>
-                                            <w:numId w:val="8"/>
+                                            <w:numId w:val="4"/>
                                         </w:numPr>
-                                    {% endif %}
                                     <w:rPr></w:rPr>
                                 </w:pPr>
                                 <w:r>
@@ -2248,12 +2241,10 @@
                                 <w:pPr>
                                     <w:pStyle w:val="Contenudetableau"/>
                                     <w:widowControl w:val="false"/>
-                                    {% if JDD.responsablesAnalyse | length > 1 %}
                                         <w:numPr>
                                             <w:ilvl w:val="0"/>
-                                            <w:numId w:val="8"/>
+                                            <w:numId w:val="4"/>
                                         </w:numPr>
-                                    {% endif %}
                                     <w:rPr></w:rPr>
                                 </w:pPr>
                                 <w:r>
@@ -2317,7 +2308,7 @@
                                     <w:color w:val="222222"/>
                                     <w:spacing w:val="0"/>
                                 </w:rPr>
-                                <w:t>{{ checkBox(JDD.responsabiliteConjointe) }}</w:t>
+                                <w:t>{{ checkBox(JDD.institutionsDifferentes) }}</w:t>
                             </w:r>
                             <w:r>
                                 <w:rPr>
@@ -2357,7 +2348,7 @@
                                     <w:color w:val="222222"/>
                                     <w:spacing w:val="0"/>
                                 </w:rPr>
-                                <w:t xml:space="preserve">{% if JDD.institutionsDifferentes %}{{ checkBox(not JDD.responsabiliteConjointe) }}{% else %}☐{% endif %} </w:t>
+                                <w:t xml:space="preserve">{{ checkBox(not JDD.institutionsDifferentes) }}</w:t>
                             </w:r>
                             <w:r>
                                 <w:rPr>
@@ -5328,7 +5319,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[0]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[0]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5375,7 +5366,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[1]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[1]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5423,7 +5414,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[2]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[2]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5471,7 +5462,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[3]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[3]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5518,7 +5509,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[4]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[4]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5566,7 +5557,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[5]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[5]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5614,7 +5605,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[6]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[6]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5661,7 +5652,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[7]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[7]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5708,7 +5699,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[8]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[8]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5756,7 +5747,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[9]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[9]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5804,7 +5795,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[10]) }}</w:t>
+                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11] and JDD.criteresEtudeImpact[10]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5852,7 +5843,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(JDD.criteresEtudeImpact[11]) }}</w:t>
+                            <w:t>{{ checkBox(not JDD.criteresEtudeImpact[11]) }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -5874,7 +5865,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>Aucun des critères si dessus</w:t>
+                            <w:t>Aucun des critères ci-dessus</w:t>
                         </w:r>
                     </w:p>
                 </w:tc>
@@ -6466,7 +6457,7 @@
                 </w:tc>
             </w:tr>
             {% for nature in JDD.natures %}
-                {% if nature.precisionNature != "" %}
+                {% if nature.concernee %}
                 <w:tr>
                 <w:trPr></w:trPr>
                 <w:tc>
@@ -6585,7 +6576,7 @@
                                 <w:color w:val="000000"/>
                                 <w:spacing w:val="0"/>
                             </w:rPr>
-                            <w:t>{{ checkBox(nature.precisionOrigine == "") }}</w:t>
+                            <w:t>{{ checkBox(nature.precisionNature != "" and nature.precisionOrigine == "") }}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
