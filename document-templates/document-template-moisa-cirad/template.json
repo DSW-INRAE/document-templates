@@ -17,7 +17,13 @@
         {
             "orgId": "00001",
             "kmId": "pgd",
-            "minVersion": "2.0.0",
+            "minVersion": "1.0.0",
+            "maxVersion": null
+        },
+        {
+            "orgId": "global",
+            "kmId": "v1",
+            "minVersion": "0.0.1",
             "maxVersion": null
         }
     ],
@@ -139,23 +145,6 @@
             ]
         },
         {
-            "uuid": "be1d4626-87d1-470c-8702-31d259bd47eb",
-            "name": "Submit",
-            "shortName": "submit",
-            "icon": "fas fa-file",
-            "color": "#f15722",
-            "steps": [
-                {
-                    "name": "jinja",
-                    "options": {
-                        "template": "src/submit.json.jinja2",
-                        "content-type": "text/json",
-                        "extension": "json"
-                    }
-                }
-            ]
-        },
-        {
             "uuid": "2e3cd342-fcab-41ac-b155-6487e8ddb12b",
             "name": "Projet CSV",
             "shortName": "projet-csv",
@@ -202,6 +191,57 @@
                         "template": "src/csv/jeu-donnees-externes.csv.jinja2",
                         "content-type": "text/csv",
                         "extension": "csv"
+                    }
+                }
+            ]
+        },
+        {
+            "uuid": "be1d4626-87d1-470c-8702-31d259bd47eb",
+            "name": "Submit JSON",
+            "shortName": "submit",
+            "icon": "fas fa-file",
+            "color": "#f15722",
+            "steps": [
+                {
+                    "name": "jinja",
+                    "options": {
+                        "template": "src/submit.json.jinja2",
+                        "content-type": "text/json",
+                        "extension": "json"
+                    }
+                }
+            ]
+        },
+        {
+            "uuid": "3b0cbd66-979e-4691-a00e-9c3406510e33",
+            "name": "Submit CSV",
+            "shortName": "submit",
+            "icon": "fas fa-file",
+            "color": "#f15722",
+            "steps": [
+                {
+                    "name": "jinja",
+                    "options": {
+                        "template": "src/submit.json.jinja2",
+                        "content-type": "text/json",
+                        "extension": "json"
+                    }
+                }
+            ]
+        },
+        {
+            "uuid": "bb4e000e-862d-44f0-847c-341734049d57",
+            "name": "Submit Docx",
+            "shortName": "submit",
+            "icon": "fas fa-file",
+            "color": "#f15722",
+            "steps": [
+                {
+                    "name": "jinja",
+                    "options": {
+                        "template": "src/submit.json.jinja2",
+                        "content-type": "text/json",
+                        "extension": "json"
                     }
                 }
             ]
